@@ -1,8 +1,8 @@
 // main.ts
-import { Alojamiento } from '../src/model/Alojamiento';
-import { Inquilino } from '../src/model/Inquilino';
-import { Solicitud } from '../src/model/Solicitud';
-import { Reserva } from '../src/model/Reserva';
+import { Alojamiento } from './src/model/Alojamiento';
+import { Inquilino } from './src/model/Inquilino';
+import { Solicitud } from './src/model/Solicitud';
+import { Reserva } from './src/model/Reserva';
 
 console.log('=== SISTEMA DE GESTIÓN DE ALOJAMIENTOS EN MEMORIA ===\n');
 
