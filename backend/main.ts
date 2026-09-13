@@ -1,13 +1,13 @@
-import { RangoPresupuesto } from "./src/model/RangoPresupuesto";
-import { Casa } from "./src/model/Casa";
-import { Apartamento } from "./src/model/Apartamento";
-import { Pensionado } from "./src/model/Pensionado";
-import { Preferencia } from "./src/model/Preferencia";
-import { Ubicacion } from "./src/model/Ubicacion";
-import { Caracteristica } from "./src/model/Caracteristica";
-import { Precio } from "./src/model/Precio";
-import { Regla } from "./src/model/Regla";
-import { Alojamiento } from "./src/model/Alojamiento";
+import { RangoPresupuesto } from "./src/model/Alojamiento/RangoPresupuesto";
+import { Casa } from "./src/model/Alojamiento/Casa";
+import { Apartamento } from "./src/model/Alojamiento/Apartamento";
+import { Pensionado } from "./src/model/Alojamiento/Pensionado";
+import { Preferencia } from "./src/model/Alojamiento/Preferencia";
+import { Ubicacion } from "./src/model/Alojamiento/Ubicacion";
+import { Caracteristica } from "./src/model/Alojamiento/Caracteristica";
+import { Precio } from "./src/model/Alojamiento/Precio";
+import { Regla } from "./src/model/Alojamiento/Regla";
+import { Alojamiento } from "./src/model/Alojamiento/Alojamiento";
 
 function main() {
   console.log("=== INICIANDO PRUEBAS DEL DOMINIO ===\n");

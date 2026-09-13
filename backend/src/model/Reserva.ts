@@ -1,3 +1,5 @@
+import { Alojamiento } from './Alojamiento/Alojamiento'
+
 export class Reserva {
   private id: number;
   private fechaInicioConfirmada: Date;
@@ -5,6 +7,7 @@ export class Reserva {
   private precioAcordado: number;
   private fechaReserva: Date;
   private estado: string;
+  private alojamiento: Alojamiento;
 
   constructor(
     id: number,
@@ -12,7 +15,8 @@ export class Reserva {
     fechaFinConfirmada: Date,
     precioAcordado: number,
     fechaReserva: Date,
-    estado: string = 'PENDIENTE'
+    estado: string = 'PENDIENTE',
+    alojamiento: Alojamiento
   ) {
     this.id = id;
     this.fechaInicioConfirmada = fechaInicioConfirmada;
@@ -20,15 +24,7 @@ export class Reserva {
     this.precioAcordado = precioAcordado;
     this.fechaReserva = fechaReserva;
     this.estado = estado;
-  }
-
-  // Getters para consultar el estado de la reserva
-  public getId(): number {
-    return this.id;
-  }
-
-  public getEstado(): string {
-    return this.estado;
+    this.alojamiento = alojamiento;
   }
 
   public reservar(): void {
@@ -52,4 +48,8 @@ export class Reserva {
     }
     this.estado = 'CANCELADA';
   }
+
+  public getId(): number { return this.id; }
+  public getEstado(): string { return this.estado; }
+  public getAlojamiento(): Alojamiento { return this.alojamiento; }
 }

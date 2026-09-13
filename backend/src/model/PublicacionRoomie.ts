@@ -1,21 +1,35 @@
-// src/model/PublicacionRoomie.ts
+import { Alojamiento } from "./Alojamiento/Alojamiento";
 
-export class PublicacionRoomieModel {
+export class PublicacionRoomie {
   private id: number;
-  private descripcionPresentacion: string;
-  private presupuestoMinimo: number;
-  private presupuestoMaximo: number;
-  private carreraFiltro: string;
-  private fechaPublicacion: Date;
+  private descripcion: string;
+  //private presupuestoMinimo: number;
+  //private presupuestoMaximo: number;
+  private fecha: Date;
+  private estado: string;
+  private alojamiento: Alojamiento;
 
-  constructor(id: number, descripcionPresentacion: string, presupuestoMinimo: number, presupuestoMaximo: number, carreraFiltro: string, fechaPublicacion: Date) {
+  constructor(
+    id: number,
+    descripcion: string,
+    fecha: Date,
+    estado: string,
+    alojamiento: Alojamiento
+  ) {
     this.id = id;
-    this.descripcionPresentacion = descripcionPresentacion;
-    this.presupuestoMinimo = presupuestoMinimo;
-    this.presupuestoMaximo = presupuestoMaximo;
-    this.carreraFiltro = carreraFiltro;
-    this.fechaPublicacion = fechaPublicacion;
+    this.descripcion = descripcion;
+    this.fecha = fecha;
+    this.estado = estado;
+    this.alojamiento = alojamiento;     
   }
 
-  
+  public actualizarEstado(nuevoEstado: string): void {
+    this.estado = nuevoEstado;
+  }
+
+  public getId(): number { return this.id }
+  public getDescripcion(): string { return this.descripcion }
+  public getFecha(): Date { return this.fecha }
+  public getEstado(): string { return this.estado }
+  public getAlojamiento(): Alojamiento { return this.alojamiento }
 }

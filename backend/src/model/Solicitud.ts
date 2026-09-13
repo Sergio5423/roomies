@@ -1,41 +1,23 @@
+import { Alojamiento } from './Alojamiento/Alojamiento'
+
 export class Solicitud {
   private id: number;
   private fechaSolicitud: Date;
-  private fechaInicioSolicitada: Date;
-  private fechaFinSolicitada: Date;
-  private mensaje: string;
   private estado: string;
+  private alojamiento: Alojamiento;
 
   constructor(
     id: number,
     fechaSolicitud: Date,
-    fechaInicioSolicitada: Date,
-    fechaFinSolicitada: Date,
-    mensaje: string,
-    estado: string = 'PENDIENTE'
+    estado: string = 'PENDIENTE',
+    alojamiento: Alojamiento
   ) {
     this.id = id;
     this.fechaSolicitud = fechaSolicitud;
-    this.fechaInicioSolicitada = fechaInicioSolicitada;
-    this.fechaFinSolicitada = fechaFinSolicitada;
-    this.mensaje = mensaje;
     this.estado = estado;
+    this.alojamiento = alojamiento;
   }
 
-  // Getters para consultar la información
-  public getId(): number {
-    return this.id;
-  }
-
-  public getEstado(): string {
-    return this.estado;
-  }
-
-  public getMensaje(): string {
-    return this.mensaje;
-  }
-
-  // Implementación de métodos del UML
   public aceptarSolicitud(): void {
     if (this.estado !== 'PENDIENTE') {
       throw new Error(`No se puede aceptar una solicitud en estado: ${this.estado}`);
@@ -56,4 +38,8 @@ export class Solicitud {
     }
     this.estado = 'CANCELADA';
   }
+
+  public getId(): number { return this.id; }
+  public getEstado(): string { return this.estado; }
+  public getAlojamiento(): Alojamiento { return this.alojamiento }
 }

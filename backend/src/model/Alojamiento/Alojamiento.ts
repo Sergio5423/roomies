@@ -54,7 +54,7 @@ export class Alojamiento {
     this.precio = datos.precio;
   }
 
-  public cambiarEstado(nuevoEstado: string): void {
+  public actualizarEstado(nuevoEstado: string): void {
     this.estado = nuevoEstado;
   }
 
