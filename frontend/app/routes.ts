@@ -31,4 +31,17 @@ export default [
     "privacidad",
     "routes/privacy/privacy.tsx",
   ),
+
+  // Login
+  route(
+    "login",
+    "routes/login/login.tsx",
+  ),
+
+  // Registro
+  route(
+    "register",
+    "routes/register/register.tsx",
+  ),
+
 ] satisfies RouteConfig;

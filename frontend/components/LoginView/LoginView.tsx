@@ -1,27 +1,6 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
 import { ScreenHeader } from "@components/ScreenHeader/ScreenHeader";
 import TextField from "@components/TextField/TextField";
 import PasswordField from "@components/PasswordField/PasswordField";
-import ProfileTypeSelect from "@components/ProfileTypeSelect/ProfileTypeSelect";
-
-const UserIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-    <circle
-      cx="12"
-      cy="8"
-      r="3.2"
-      stroke="currentColor"
-      strokeWidth="1.8"
-    />
-    <path
-      d="M5 20c1.4-3.4 4-5 7-5s5.6 1.6 7 5"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-    />
-  </svg>
-);
 
 const MailIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -44,104 +23,54 @@ const MailIcon = () => (
   </svg>
 );
 
-const PhoneIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-    <rect
-      x="6"
-      y="2.5"
-      width="12"
-      height="19"
-      rx="2.5"
-      stroke="currentColor"
-      strokeWidth="1.8"
-    />
-    <path
-      d="M10.5 18.5h3"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-    />
-  </svg>
-);
+interface LoginViewProps {
+  email: string;
+  onEmailChange: (value: string) => void;
+  password: string;
+  onPasswordChange: (value: string) => void;
+  isLoading: boolean;
+  error: string | null;
+  onSubmit: (event: React.FormEvent) => void;
+  onNavigateRegister?: () => void;
+  onForgotPassword?: () => void;
+  onBack?: () => void;
+}
 
-const PROFILE_OPTIONS = [
-  {
-    value: "estudiante",
-    label: "Estudiante",
-    hint: "Busco vivienda",
-  },
-  {
-    value: "arrendador",
-    label: "Arrendador",
-    hint: "Publico inmuebles",
-  },
-];
-
-export default function RegisterPage() {
-  const navigate = useNavigate();
-
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [profileType, setProfileType] = useState("estudiante");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    setIsLoading(true);
-
-    // Aquí irá posteriormente la llamada real al backend.
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1200);
-  };
-
+export function LoginView({
+  email,
+  onEmailChange,
+  password,
+  onPasswordChange,
+  isLoading,
+  error,
+  onSubmit,
+  onNavigateRegister,
+  onForgotPassword,
+  onBack,
+}: LoginViewProps) {
   return (
     <div className="min-h-screen bg-cream flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-md">
         <div className="rounded-2xl bg-white p-7 shadow-lg shadow-green-900/5 border border-green-100">
 
           <ScreenHeader
-            title="Crea tu cuenta"
-            subtitle="Únete a la comunidad de estudiantes más grande de Colombia."
-            onBack={() => navigate(-1)}
+            title="¡Hola de nuevo!"
+            subtitle="Inicia sesión para continuar buscando tu lugar ideal."
+            onBack={onBack}
           />
 
           <form
-            onSubmit={handleSubmit}
+            onSubmit={onSubmit}
             className="mt-8 flex flex-col gap-5"
           >
             <TextField
-              label="Nombre completo"
-              placeholder="Mateo Silva"
-              icon={<UserIcon />}
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              autoComplete="name"
-              required
-            />
-
-            <TextField
-              label="Correo electrónico institucional"
+              label="Correo electrónico"
               type="email"
-              placeholder="msilva@uniandes.edu.co"
+              placeholder="ejemplo@universidad.edu.co"
               icon={<MailIcon />}
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => onEmailChange(e.target.value)}
               autoComplete="email"
-              required
-            />
-
-            <TextField
-              label="Teléfono móvil"
-              type="tel"
-              placeholder="+57 312 456 7890"
-              icon={<PhoneIcon />}
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              autoComplete="tel"
               required
             />
 
@@ -149,17 +78,31 @@ export default function RegisterPage() {
               label="Contraseña"
               placeholder="••••••••••"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="new-password"
+              onChange={(e) => onPasswordChange(e.target.value)}
+              autoComplete="current-password"
               required
             />
 
-            <ProfileTypeSelect
-              label="Tipo de perfil"
-              options={PROFILE_OPTIONS}
-              value={profileType}
-              onChange={setProfileType}
-            />
+            <div className="flex justify-end -mt-2">
+              <button
+                type="button"
+                onClick={onForgotPassword}
+                className="text-sm font-medium text-green-700 transition-all duration-200 hover:text-green-800 hover:underline"
+              >
+                ¿Olvidé mi contraseña?
+              </button>
+            </div>
+
+            {error && (
+              <div className="rounded-lg border border-red-100 bg-red-50 px-4 py-3">
+                <p
+                  role="alert"
+                  className="text-sm font-medium text-red-500"
+                >
+                  {error}
+                </p>
+              </div>
+            )}
 
             <button
               type="submit"
@@ -184,7 +127,9 @@ export default function RegisterPage() {
                 disabled:opacity-60
               "
             >
-              {isLoading ? "Creando cuenta..." : "Crear cuenta"}
+              {isLoading
+                ? "Iniciando sesión..."
+                : "Iniciar sesión"}
             </button>
 
             <div className="relative my-1">
@@ -194,19 +139,19 @@ export default function RegisterPage() {
 
               <div className="relative flex justify-center">
                 <span className="bg-white px-3 text-xs text-gray-400">
-                  ¿Ya eres parte de ROOMIES?
+                  ¿Nuevo en ROOMIES?
                 </span>
               </div>
             </div>
 
             <div className="text-center">
               <p className="text-sm text-gray-500">
-                ¿Ya tienes una cuenta?
+                Crea tu cuenta y encuentra tu lugar ideal
               </p>
 
               <button
                 type="button"
-                onClick={() => navigate("/login")}
+                onClick={onNavigateRegister}
                 className="
                   mt-2
                   inline-flex
@@ -225,7 +170,7 @@ export default function RegisterPage() {
                   active:scale-95
                 "
               >
-                Inicia sesión
+                Regístrate aquí
 
                 <span className="text-lg transition-transform duration-200">
                   →
@@ -236,7 +181,7 @@ export default function RegisterPage() {
         </div>
 
         <p className="mt-5 text-center text-xs text-gray-400">
-          Encuentra vivienda. Encuentra compañeros.
+          Encuentra vivienda. Encuentra compañeros. Encuentra tu lugar.
         </p>
       </div>
     </div>
