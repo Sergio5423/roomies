@@ -1,81 +1,123 @@
-// main.ts
-import { Alojamiento } from './src/model/Alojamiento';
-import { Inquilino } from './src/model/Inquilino';
-import { Solicitud } from './src/model/Solicitud';
-import { Reserva } from './src/model/Reserva';
+import { RangoPresupuesto } from "./src/model/RangoPresupuesto";
+import { Casa } from "./src/model/Casa";
+import { Apartamento } from "./src/model/Apartamento";
+import { Pensionado } from "./src/model/Pensionado";
+import { Preferencia } from "./src/model/Preferencia";
+import { Ubicacion } from "./src/model/Ubicacion";
+import { Caracteristica } from "./src/model/Caracteristica";
+import { Precio } from "./src/model/Precio";
+import { Regla } from "./src/model/Regla";
+import { Alojamiento } from "./src/model/Alojamiento";
 
-console.log('=== SISTEMA DE GESTIÓN DE ALOJAMIENTOS EN MEMORIA ===\n');
+function main() {
+  console.log("=== INICIANDO PRUEBAS DEL DOMINIO ===\n");
 
-// 1. Instanciar un Alojamiento disponible
-const apartamento1 = new Alojamiento(
-  101,
-  "Apartamento Cerca a la Universidad",
-  "Habitación amoblada con baño privado y todos los servicios incluidos.",
-  "Calle 123 #45-67",
-  "Bogotá",
-  "Chapinero",
-  "10 minutos",
-  4.6097,
-  -74.0817,
-  "APARTAMENTO",
-  1500000,
-  45.0,
-  1,
-  2,
-  ["Wifi", "Agua", "Luz", "Gas"],
-  true,
-  true,
-  false,
-  ["https://foto1.jpg", "https://foto2.jpg"]
-);
+  try {
+    // 1. Instanciación y prueba de autovalidación de Value Objects
+    console.log("--- 1. Probando Value Objects ---");
+    const presupuestoFelipe = new RangoPresupuesto(1000, 2500);
+    const precioCasa = new Precio(2000);
 
-console.log('--- 1. Creado Alojamiento ---');
-console.log(`Alojamiento ID: ${apartamento1.getId()}`);
-console.log(`¿Está disponible?: ${apartamento1.estaDisponible()}`);
+    const ubicacionCentro = new Ubicacion(
+      "Calle 10 #5-20",
+      "Bogotá",
+      "Centro",
+      "2.5 km",
+      4.6097,
+      -74.0817
+    );
 
-// 2. Instanciar un Inquilino
-const inquilino1 = new Inquilino(1, "Carlos Pérez", "carlos.perez@email.com");
+    const caracteristicasApto = new Caracteristica(
+      3,
+      85,
+      4,      
+      true,
+      false
+    );
 
-console.log('\n--- 2. Guardando Alojamiento en Favoritos ---');
-inquilino1.guardarFavorito(apartamento1);
-console.log(`Favoritos actualizados: ${inquilino1.getFavoritos().length} elemento(s)`);
+    console.log("✅ Value Objects creados exitosamente.");
+    console.log(`- Rango Presupuesto: $${presupuestoFelipe.getMinimo()} - $${presupuestoFelipe.getMaximo()}`);
+    console.log(`- Ubicación: ${ubicacionCentro.getDireccion()}, ${ubicacionCentro.getCiudad()}`);
 
-// 3. Crear una Solicitud de Reserva por el Inquilino
-console.log('\n--- 3. Creación de Solicitud de Reserva ---');
-const fechaInicio = new Date('2026-10-01');
-const fechaFin = new Date('2026-10-15');
+    // 2. Prueba (TipoAlojamiento)
+    console.log("\n--- 2. Probando (TipoAlojamiento) ---");
+    const casa = new Casa([],true);
+    const apartamento = new Apartamento(["Luz","Agua"],false);
+    const pensionado = new Pensionado(["Comida","Luz","Agua"],false);
 
-const solicitud1 = inquilino1.crearSolicitud(
-  501,
-  fechaInicio,
-  fechaFin,
-  "Hola, me interesa arrendar el espacio durante las primeras semanas de octubre."
-);
+    console.log(`- Tipo 1: ${casa.getNombreTipo()} | Contrato Anual: ${casa.requiereContratoAnual()}`);
+    console.log(`- Tipo 2: ${apartamento.getNombreTipo()} | Servicios: ${apartamento.getServiciosIncluidos().join(", ")} | Contrato Anual: ${apartamento.requiereContratoAnual()}`);
+    console.log(`- Tipo 3: ${pensionado.getNombreTipo()} | | Servicios: ${pensionado.getServiciosIncluidos().join(", ")} | Contrato Anual: ${pensionado.requiereContratoAnual()}`);
 
-console.log(`Solicitud ID: ${solicitud1.getId()}`);
-console.log(`Mensaje enviado: "${solicitud1.getMensaje()}"`);
-console.log(`Estado inicial de la solicitud: ${solicitud1.getEstado()}`);
+    // 3. Prueba de la Entidad Preferencia
+    console.log("\n--- 3. Probando Entidad Preferencia ---");
+    const preferenciaInquilino = new Preferencia(
+      1,
+      presupuestoFelipe,
+      "5", 
+      "2", 
+      true,
+      true,
+      apartamento
+    );
 
-// 4. Aceptar la Solicitud (Proceso del Propietario)
-console.log('\n--- 4. Procesamiento de la Solicitud ---');
-solicitud1.aceptarSolicitud();
-console.log(`Nuevo estado de la solicitud: ${solicitud1.getEstado()}`);
+    console.log(`- Tipo deseado: ${preferenciaInquilino.getTipoAlojamiento().getNombreTipo()}`);
+    console.log(`- ¿$2000 está en su presupuesto?: ${preferenciaInquilino.esPrecioCompatible(2000)}`);
+    console.log(`- ¿$3500 está en su presupuesto?: ${preferenciaInquilino.esPrecioCompatible(3500)}`);
+    console.log(`- ¿Es compatible con una Casa?: ${preferenciaInquilino.esTipoCompatible(casa)}`);
+    console.log(`- ¿Es compatible con un Apartamento?: ${preferenciaInquilino.esTipoCompatible(apartamento)}`);
 
-// 5. Creación y Confirmación de la Reserva final
-console.log('\n--- 5. Confirmación de la Reserva ---');
-const reserva1 = new Reserva(
-  901,
-  fechaInicio,
-  fechaFin,
-  50000, // Precio por día
-  new Date()
-);
+    // 4. Instanciación y gestión de Alojamiento con Reglas
+    console.log("\n--- 4. Probando Entidad Alojamiento y Reglas ---");
+    const alojamiento1 = new Alojamiento(
+      101,
+      "Apartamento Moderno Chapinero",
+      "Excelente iluminación y vista a los cerros",
+      apartamento,
+      ["foto1.png", "foto2.png"],
+      4.8,
+      new Date(),
+      "Disponible",
+      ubicacionCentro,
+      caracteristicasApto,
+      precioCasa
+    );
 
-// Descontar o marcar el alojamiento como reservado
-apartamento1.reservar();
-reserva1.confirmarReserva();
+    const reglaMascotas = new Regla(1, "Mascotas", "No se permiten perros ni gatos");
+    const reglaSilencio = new Regla(2, "Silencio", "Silencio a partir de las 10 PM");
 
-console.log(`Estado actual del Alojamiento: ${apartamento1.getEstado()}`);
-console.log(`¿Sigue el alojamiento disponible?: ${apartamento1.estaDisponible()}`);
-console.log(`Estado final de la Reserva: ${reserva1.getEstado()}`);
-console.log(`Cálculo total de la estancia: $${reserva1.calcularTotal(400000,3)}`);
+    alojamiento1.getTipoAlojamiento().agregarRegla(reglaMascotas);
+    alojamiento1.getTipoAlojamiento().agregarRegla(reglaSilencio);
+
+    console.log(`- Alojamiento Creado: ${alojamiento1.getTitulo()}`);
+    console.log(`- Tipo Inmueble (Delegado): ${alojamiento1.getTipoAlojamientoNombre()}`);
+    console.log(`- Servicios Incluidos (Delegado): ${alojamiento1.getServiciosIncluidos().join(", ")}`);
+    console.log(`- Reglas registradas (${alojamiento1.getReglas().length}):`);
+    console.log(alojamiento1.getReglas());
+
+    // 5. Evaluación de Compatibilidad Real (Preferencia vs Alojamiento)
+    console.log("\n--- 5. Evaluando Compatibilidad Real ---");
+    const esPrecioValido = preferenciaInquilino.esPrecioCompatible(alojamiento1.getPrecio().getPrecioMensual());
+    const esTipoValido = preferenciaInquilino.esTipoCompatible(alojamiento1.getTipoAlojamiento());
+
+    console.log(`- ¿El precio ($${alojamiento1.getPrecio().getPrecioMensual()}) le sirve al inquilino?: ${esPrecioValido}`);
+    console.log(`- ¿El tipo (${alojamiento1.getTipoAlojamientoNombre()}) coincide con su deseo?: ${esTipoValido}`);
+    console.log(`-> COMPATIBILIDAD FINAL: ${esPrecioValido && esTipoValido ? "APROBADO" : "RECHAZADO"}`);
+
+    // 6. Prueba de Manejo de Excepciones en el Dominio
+    console.log("\n--- 6. Probando Autovalidaciones de Seguridad ---");
+    try {
+      new RangoPresupuesto(3000, 1000); // Mínimo mayor que máximo (Debe fallar)
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(`✅ Excepción capturada correctamente: "${error.message}"`);
+      }
+    }
+
+    console.log("\n=== TODAS LAS PRUEBAS FINALIZARON CON ÉXITO ===");
+  } catch (error) {
+    console.error("❌ Error inesperado durante las pruebas:", error);
+  }
+}
+
+main();

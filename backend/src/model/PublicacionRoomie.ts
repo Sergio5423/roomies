@@ -17,5 +17,5 @@ export class PublicacionRoomieModel {
     this.fechaPublicacion = fechaPublicacion;
   }
 
-  // Add methods for CRUD operations if needed
+  
 }

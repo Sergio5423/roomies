@@ -52,12 +52,4 @@ export class Reserva {
     }
     this.estado = 'CANCELADA';
   }
-
-  public calcularTotal(precio:number, meses: number): number {
-    if (meses <= 0) {
-      throw new Error('La cantidad de meses debe ser mayor a cero.');
-    }
-
-    return meses * precio;
-  }
 }
