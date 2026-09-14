@@ -24,10 +24,10 @@ export const quickActions: QuickAction[] = [
   },
   {
     id: "roommate",
-    title: "Busco un roommate",
+    title: "Busco un compañero",
     description:
       "Conecta con personas compatibles con tu estilo de vida y convivencia.",
-    route: "/roommates",
+    route: "/roomies",
     icon: "◉",
     image:
       "https://images.pexels.com/photos/7683827/pexels-photo-7683827.jpeg?auto=compress&cs=tinysrgb&w=1200",

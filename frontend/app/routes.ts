@@ -31,4 +31,25 @@ export default [
     "privacidad",
     "routes/privacy/privacy.tsx",
   ),
+
+  route(
+    "habitaciones",
+    "routes/habitaciones/bedrooms.tsx",
+  ),
+
+  route(
+    "habitaciones/:ciudad/:slug",
+    "routes/habitaciones/bedroomDetails.tsx",
+  ),
+
+  route(
+    "roomies",
+    "routes/roomies/roomies.tsx",
+  ),
+
+  route(
+    "roomies/:id",
+    "routes/roomies/roomiesDetails.tsx",
+  ),
+  
 ] satisfies RouteConfig;
