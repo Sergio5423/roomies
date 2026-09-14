@@ -5,6 +5,7 @@
 import { AlojamientoService } from "../service/AlojamientoService.js";
 import { Alojamiento } from "../model/Alojamiento/Alojamiento.js";
 import { mapErrorToHttpStatus } from "./httpErrorMapper.js";
+import { EstadoAlojamiento } from "../model/estados.js";
 
 export class AlojamientoController {
   constructor(private readonly alojamientoService: AlojamientoService) {}
@@ -27,7 +28,7 @@ export class AlojamientoController {
     }
   }
 
-  public async cambiarEstado(id: number, nuevoEstado: string) {
+  public async cambiarEstado(id: number, nuevoEstado: EstadoAlojamiento) {
     try {
       const actualizado = await this.alojamientoService.cambiarEstadoAlojamiento(id, nuevoEstado);
       return { status: 200, data: actualizado };

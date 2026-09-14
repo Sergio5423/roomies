@@ -5,6 +5,7 @@ import type { IAlojamientoRepository } from "../repository/IAlojamientoRepositor
 // (NotFoundError) para que el controlador lo mapee siempre a 404, sin importar desde
 // qué método se haya originado (ver Problema 6 del informe de auditoría).
 import { NotFoundError } from "../model/errors.js";
+import { EstadoAlojamiento } from "../model/estados.js";
 
 export class AlojamientoService {
   constructor(private readonly alojamientoRepo: IAlojamientoRepository) {}
@@ -29,7 +30,7 @@ export class AlojamientoService {
     return await this.alojamientoRepo.listarTodos();
   }
 
-  public async cambiarEstadoAlojamiento(id: number, nuevoEstado: string): Promise<Alojamiento> {
+  public async cambiarEstadoAlojamiento(id: number, nuevoEstado: EstadoAlojamiento): Promise<Alojamiento> {
     const alojamiento = await this.obtenerPorId(id);
     alojamiento.actualizarEstado(nuevoEstado); // Método del dominio
     return await this.alojamientoRepo.guardar(alojamiento);

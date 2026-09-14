@@ -26,6 +26,16 @@ import { PublicacionRoomie } from "./src/model/PublicacionRoomie";
 import { Solicitud } from "./src/model/Solicitud";
 import { Reserva } from "./src/model/Reserva";
 import { Resena } from "./src/model/Resena";
+// NOTA (Fase 7): los literales de estado ("Disponible", "Activo", "PENDIENTE", "ACTIVA",
+// etc.) se reemplazan por los enums correspondientes (ver Problema 8 del informe de
+// auditoría).
+import {
+  EstadoAlojamiento,
+  EstadoUsuario,
+  EstadoSolicitud,
+  EstadoReserva,
+  EstadoPublicacionRoomie,
+} from "./src/model/estados";
 
 function main() {
   console.log("=== INICIANDO PRUEBAS DEL DOMINIO COMPLETO ===\n");
@@ -95,7 +105,7 @@ function main() {
       ["foto1.png", "foto2.png"],
       4.8,
       new Date(),
-      "Disponible",
+      EstadoAlojamiento.DISPONIBLE,
       ubicacionCentro,
       caracteristicasApto,
       precioCasa
@@ -129,7 +139,7 @@ function main() {
       "Carlos Mendoza",
       "3001234567",
       "Propietario",
-      "Activo",
+      EstadoUsuario.ACTIVO,
       "carlos@mail.com"
     );
 
@@ -141,7 +151,7 @@ function main() {
       "Felipe Gómez",
       "3119876543",
       "Inquilino",
-      "Activo",
+      EstadoUsuario.ACTIVO,
       "felipe@mail.com"
     );
 
@@ -162,7 +172,7 @@ function main() {
       501,
       "Busco roomie para compartir gastos de apto en Chapinero",
       new Date(),
-      "ACTIVA",
+      EstadoPublicacionRoomie.ACTIVA,
       alojamiento1
     );
 
@@ -177,7 +187,7 @@ function main() {
     // Inquilino crea solicitud
     // NOTA (Fase 2): "crearSolicitud" recibe una Solicitud ya construida y devuelve "void"
     // (antes se le pasaba un Alojamiento y se esperaba que devolviera la Solicitud).
-    const solicitud = new Solicitud(801, new Date(), "PENDIENTE", alojamiento1);
+    const solicitud = new Solicitud(801, new Date(), EstadoSolicitud.PENDIENTE, alojamiento1);
     inquilino.crearSolicitud(solicitud);
     console.log(`- Solicitud generada con ID: ${solicitud.getId()} | Estado: ${solicitud.getEstado()}`);
 
@@ -198,7 +208,7 @@ function main() {
       fechaFin,
       alojamiento1.getPrecio().getPrecioMensual(),
       new Date(),
-      "PENDIENTE",
+      EstadoReserva.PENDIENTE,
       alojamiento1
     );
     reserva.confirmarReserva();

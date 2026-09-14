@@ -1,5 +1,6 @@
 import { Usuario } from './Usuario';
 import { Alojamiento } from '../Alojamiento/Alojamiento';
+import { EstadoUsuario } from '../estados';
 
 export class Propietario extends Usuario {
   private alojamientosPropietario: Alojamiento[];
@@ -9,7 +10,7 @@ export class Propietario extends Usuario {
     nombreCompleto: string,
     telefono: string,
     rol: string,
-    estado: string,
+    estado: EstadoUsuario,
     email: string,
     alojamientosPropietario: Alojamiento[] = []
   ) {

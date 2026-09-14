@@ -8,6 +8,9 @@ import { Apartamento } from "./model/Alojamiento/Apartamento.js";
 import { Ubicacion } from "./model/Alojamiento/Ubicacion.js";
 import { Caracteristica } from "./model/Alojamiento/Caracteristica.js";
 import { Precio } from "./model/Alojamiento/Precio.js";
+// NOTA (Fase 7): los literales "Disponible"/"Ocupado" se reemplazan por EstadoAlojamiento
+// (ver Problema 8 del informe de auditoría).
+import { EstadoAlojamiento } from "./model/estados.js";
 
 async function main() {
   const { alojamientoController: controller } = buildApp();
@@ -26,7 +29,7 @@ async function main() {
     [],
     5.0,
     new Date(),
-    "Disponible",
+    EstadoAlojamiento.DISPONIBLE,
     ub,
     car,
     precio
@@ -34,7 +37,7 @@ async function main() {
 
   // Probar operaciones a través del Controller
   console.log("1. Guardando alojamiento:", await controller.crear(nuevoAlojamiento));
-  console.log("2. Cambiando estado:", await controller.cambiarEstado(1, "Ocupado"));
+  console.log("2. Cambiando estado:", await controller.cambiarEstado(1, EstadoAlojamiento.OCUPADO));
   console.log("3. Consultando alojamientos:", await controller.obtener(1));
 
   // NOTA (Fase 4): caso de verificación del Problema 6 — "cambiarEstado" sobre un ID
@@ -42,7 +45,7 @@ async function main() {
   // de esta fase respondía 400 por estar hardcodeado en el método. Se deja este caso como
   // smoke test manual del fix, ya que el proyecto todavía no cuenta con un framework de
   // pruebas automatizadas.
-  const resultadoNoEncontrado = await controller.cambiarEstado(999, "Ocupado");
+  const resultadoNoEncontrado = await controller.cambiarEstado(999, EstadoAlojamiento.OCUPADO);
   console.log("4. Cambiando estado de ID inexistente (debe ser 404):", resultadoNoEncontrado);
   console.assert(
     resultadoNoEncontrado.status === 404,

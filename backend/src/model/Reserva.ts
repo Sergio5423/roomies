@@ -1,4 +1,7 @@
 import { Alojamiento } from './Alojamiento/Alojamiento'
+// NOTA (Fase 7): "estado" pasó de "string" a EstadoReserva (ver Problema 8 del informe de
+// auditoría) — mismos valores y transiciones ya usados, ahora verificados en compilación.
+import { EstadoReserva } from './estados'
 
 export class Reserva {
   private id: number;
@@ -6,7 +9,7 @@ export class Reserva {
   private fechaFinConfirmada: Date;
   private precioAcordado: number;
   private fechaReserva: Date;
-  private estado: string;
+  private estado: EstadoReserva;
   private alojamiento: Alojamiento;
 
   constructor(
@@ -15,7 +18,7 @@ export class Reserva {
     fechaFinConfirmada: Date,
     precioAcordado: number,
     fechaReserva: Date,
-    estado: string = 'PENDIENTE',
+    estado: EstadoReserva = EstadoReserva.PENDIENTE,
     alojamiento: Alojamiento
   ) {
     this.id = id;
@@ -28,28 +31,28 @@ export class Reserva {
   }
 
   public reservar(): void {
-    if (this.estado !== 'PENDIENTE') {
+    if (this.estado !== EstadoReserva.PENDIENTE) {
       throw new Error(`No se puede iniciar la reserva. Estado actual: ${this.estado}`);
     }
     this.fechaReserva = new Date();
-    this.estado = 'PENDIENTE';
+    this.estado = EstadoReserva.PENDIENTE;
   }
 
   public confirmarReserva(): void {
-    if (this.estado === 'CANCELADA') {
+    if (this.estado === EstadoReserva.CANCELADA) {
       throw new Error('No se puede confirmar una reserva que ha sido cancelada.');
     }
-    this.estado = 'CONFIRMADA';
+    this.estado = EstadoReserva.CONFIRMADA;
   }
 
   public cancelarReserva(): void {
-    if (this.estado === 'FINALIZADA') {
+    if (this.estado === EstadoReserva.FINALIZADA) {
       throw new Error('No se puede cancelar una reserva que ya ha finalizado.');
     }
-    this.estado = 'CANCELADA';
+    this.estado = EstadoReserva.CANCELADA;
   }
 
   public getId(): number { return this.id; }
-  public getEstado(): string { return this.estado; }
+  public getEstado(): EstadoReserva { return this.estado; }
   public getAlojamiento(): Alojamiento { return this.alojamiento; }
 }

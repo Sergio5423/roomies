@@ -10,12 +10,15 @@ import { Apartamento } from "./model/Alojamiento/Apartamento.js";
 import { Ubicacion } from "./model/Alojamiento/Ubicacion.js";
 import { Caracteristica } from "./model/Alojamiento/Caracteristica.js";
 import { Precio } from "./model/Alojamiento/Precio.js";
+// NOTA (Fase 7): los literales "Activo"/"Disponible" se reemplazan por EstadoUsuario/
+// EstadoAlojamiento (ver Problema 8 del informe de auditoría).
+import { EstadoUsuario, EstadoAlojamiento } from "./model/estados.js";
 
 async function probarUsuarios() {
   const { usuarioController: controller } = buildApp();
 
-  const prop = new Propietario(1, "Carlos", "300", "Propietario", "Activo", "carlos@test.com");
-  const inq = new Inquilino(2, "Felipe", "311", "Inquilino", "Activo", "felipe@test.com");
+  const prop = new Propietario(1, "Carlos", "300", "Propietario", EstadoUsuario.ACTIVO, "carlos@test.com");
+  const inq = new Inquilino(2, "Felipe", "311", "Inquilino", EstadoUsuario.ACTIVO, "felipe@test.com");
 
   console.log("Registrar Propietario:", await controller.registrar(prop));
   console.log("Registrar Inquilino:", await controller.registrar(inq));
@@ -32,7 +35,7 @@ async function probarUsuarios() {
     [],
     0,
     new Date(),
-    "Disponible",
+    EstadoAlojamiento.DISPONIBLE,
     new Ubicacion("Calle 1", "Bogotá", "Centro", "1km", 4.0, -74.0),
     new Caracteristica(1, 30, 1, true, false),
     new Precio(800)
