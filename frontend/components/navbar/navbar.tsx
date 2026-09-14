@@ -31,10 +31,10 @@ export default function Navbar() {
           </Link>
 
           <Link
-            to="/roommates"
+            to="/roomies"
             className="text-sm font-medium text-gray-700 transition hover:text-green-700"
           >
-            Roommates
+            Roomies
           </Link>
 
           <Link

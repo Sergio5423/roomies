@@ -20,8 +20,8 @@ export default function Banner() {
           <div
             key={item.id}
             className={`absolute inset-0 transition-opacity duration-700 ${index === activeSlide
-                ? "opacity-100"
-                : "pointer-events-none opacity-0"
+              ? "opacity-100"
+              : "pointer-events-none opacity-0"
               }`}
           >
             <img
@@ -32,8 +32,7 @@ export default function Banner() {
             />
 
             {/* Overlay principal */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/10" />
-
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/75 via-slate-900/45 to-slate-900/10" />
             {/* Overlay inferior */}
             <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/40 to-transparent" />
           </div>
@@ -58,8 +57,7 @@ export default function Banner() {
             <div className="mt-8">
               <Link
                 to={slide.route}
-                className="group inline-flex items-center gap-2 rounded-xl bg-green-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg transition duration-200 hover:bg-green-700 hover:shadow-xl"
-              >
+                className="group inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg transition duration-200 hover:bg-emerald-700 hover:shadow-xl"              >
                 {slide.button}
 
                 <span className="text-lg transition-transform duration-200 group-hover:translate-x-1">
@@ -100,8 +98,8 @@ export default function Banner() {
               onClick={() => goToSlide(index)}
               aria-label={`Ir al slide ${index + 1}`}
               className={`h-2.5 rounded-full transition-all duration-300 ${index === activeSlide
-                  ? "w-8 bg-white"
-                  : "w-2.5 bg-white/50 hover:bg-white/80"
+                ? "w-8 bg-white"
+                : "w-2.5 bg-white/50 hover:bg-white/80"
                 }`}
             />
           ))}
