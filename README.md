@@ -19,10 +19,10 @@ El proyecto se desarrolla con una arquitectura frontend/backend separada y aplic
 ![Detalle de habitación](assets/habitacion-detalle.png)
 
 ## 👥 Roomies
-![Listado de roomies](assets/roomies.png)
+![Listado de roomies](assets/romies.png)
 
 ## 👤 Perfil de roomie
-![Perfil de roomie](docs/assets/roomie-perfil.png)
+![Perfil de roomie](assets/roomie-perfil.png)
 
 ---
 
