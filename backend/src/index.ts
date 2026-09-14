@@ -1,7 +1,8 @@
 // src/index.ts
-import { InMemoryAlojamientoRepository } from "./repository/InMemoryAlojamientoRepository.js";
-import { AlojamientoService } from "./service/AlojamientoService.js";
-import { AlojamientoController } from "./controller/AlojamientoController.js";
+// NOTA (Fase 3): la construcción del repositorio/service/controller ya no se hace aquí de
+// forma manual — se obtiene del Composition Root único en "./bootstrap.js" (ver Problema 3
+// del informe de auditoría).
+import { buildApp } from "./bootstrap.js";
 import { Alojamiento } from "./model/Alojamiento/Alojamiento.js";
 import { Apartamento } from "./model/Alojamiento/Apartamento.js";
 import { Ubicacion } from "./model/Alojamiento/Ubicacion.js";
@@ -9,10 +10,7 @@ import { Caracteristica } from "./model/Alojamiento/Caracteristica.js";
 import { Precio } from "./model/Alojamiento/Precio.js";
 
 async function main() {
-  // Configuración de Inyección de Dependencias
-  const repository = new InMemoryAlojamientoRepository();
-  const service = new AlojamientoService(repository);
-  const controller = new AlojamientoController(service);
+  const { alojamientoController: controller } = buildApp();
 
   // Crear Objeto de Dominio
   const apto = new Apartamento(["Luz", "Agua"], false);
