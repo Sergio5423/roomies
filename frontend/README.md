@@ -431,6 +431,82 @@ El proyecto fue analizado mediante **SonarCloud** como complemento de la auditor
 
 ---
 
+# 10. Control de Cambios y Trazabilidad
+
+El **Control de Cambios** es el artefacto central de la segunda entrega, ya que permite establecer la trazabilidad entre los problemas identificados durante la auditoría y las refactorizaciones aplicadas posteriormente.
+
+Cada cambio se registra mediante un identificador único (`CC-01`, `CC-02`, etc.) y relaciona:
+
+```text
+Hallazgo
+   ↓
+Principio SOLID / Antipatrón
+   ↓
+Archivo o clase afectada
+   ↓
+Refactorización
+   ↓
+Resultado
+```
+
+El formato se diligencia inicialmente como **plan de refactorización** y posteriormente se actualiza con la **mejora realmente aplicada**, permitiendo comprobar que cada modificación del código responde a un problema previamente identificado.
+
+## 10.1 Registro de cambios
+
+| ID        | Archivo / Clase Modificada                             | Fallo SOLID / Antipatrón                           | Descripción del Problema                                                                                                                                                         | Mejora Aplicada (Patrón / Principio)                                                                                                                    | Severidad |
+| --------- | ------------------------------------------------------ | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| **CC-01** | `frontend/routes/roomies/roomiesDetails.tsx`           | **SRP / Alta concentración de responsabilidades**  | La ruta concentra obtención de datos, resolución de relaciones, transformación, manejo de estado y renderizado. Esto dificulta su mantenimiento y aumenta sus motivos de cambio. | **Por definir después de la refactorización.** Se busca separar la lógica de obtención y transformación de datos de la responsabilidad de presentación. | **A**     |
+| **CC-02** | `frontend/routes/habitaciones/bedroomDetails.tsx`      | **SRP / Acoplamiento de responsabilidades**        | La ruta coordina parámetros de URL, acceso a repositorios, carga de datos relacionados, estado y presentación.                                                                   | **Por definir después de la refactorización.** Se busca separar responsabilidades de consulta y coordinación de la vista.                               | **M**     |
+| **CC-03** | `frontend/routes/roomies/roomies.tsx`                  | **DIP / Acoplamiento con implementación concreta** | La ruta instancia directamente `MockRoommateRepository`, haciendo que el módulo de alto nivel dependa de una implementación específica.                                          | **Por definir después de la refactorización.** Se busca que la ruta dependa de `RoommateRepository` y no directamente de `MockRoommateRepository`.      | **M**     |
+| **CC-04** | `frontend/routes/habitaciones/bedrooms.tsx`            | **DIP / Acoplamiento con implementación concreta** | La ruta instancia directamente `MockAccommodationRepository`, acoplando la lógica de presentación con la fuente de datos concreta.                                               | **Por definir después de la refactorización.** Se busca desacoplar la ruta de la implementación concreta del repositorio.                               | **M**     |
+| **CC-05** | `frontend/components/explore-location/locationMap.tsx` | **Complejidad / Mantenibilidad**                   | SonarCloud identificó un nivel elevado de anidamiento y una definición de componente que puede extraerse para reducir la complejidad.                                            | **Por definir después de la refactorización.** Se busca reducir el anidamiento y separar responsabilidades del componente.                              | **M**     |
+| **CC-06** | `backend/src/model/Alojamiento/Alojamiento.ts`         | **Problema de mantenibilidad**                     | El constructor recibe 12 parámetros, superando el máximo configurado por la regla `typescript:S107`, lo que dificulta comprender y mantener su creación.                         | **Por definir después de la refactorización.** Se evaluará agrupar parámetros relacionados mediante estructuras de datos de dominio.                    | **M**     |
+| **CC-07** | `frontend/components/habitaciones/RoomCard.tsx`        | **Mantenibilidad / Inmutabilidad**                 | Las props del componente no están declaradas como de solo lectura, aunque conceptualmente representan datos recibidos que no deberían modificarse.                               | **Por definir después de la refactorización.** Se aplicará `readonly` o `Readonly<Props>` según corresponda.                                            | **B**     |
+| **CC-08** | `frontend/components/habitaciones/RoomDetail.tsx`      | **Mantenibilidad / Inmutabilidad**                 | Las props no están declaradas explícitamente como de solo lectura, reduciendo la claridad sobre el flujo de datos del componente.                                                | **Por definir después de la refactorización.** Se aplicará `readonly` o `Readonly<Props>`.                                                              | **B**     |
+| **CC-09** | `backend/src/model/Inquilino/Inquilino.ts`             | **Mantenibilidad**                                 | El constructor recibe 9 parámetros, aumentando la complejidad necesaria para crear correctamente la entidad.                                                                     | **Por definir después de la refactorización.** Se evaluará la agrupación de parámetros relacionados.                                                    | **M**     |
+| **CC-10** | `frontend/components/habitaciones/RoomDetail.tsx`      | **Mantenibilidad**                                 | SonarCloud identifica el uso del índice del arreglo como `key`, lo que puede afectar la estabilidad de las identificaciones de elementos cuando la colección cambia.             | **Por definir después de la refactorización.** Se utilizará un identificador estable de la entidad.                                                     | **B**     |
+
+> **Nota:** Los cambios CC-01 a CC-10 constituyen el plan inicial de refactorización. La columna **"Mejora Aplicada"** deberá actualizarse después de implementar y verificar cada cambio.
+
+## 10.2 Criterios de trazabilidad
+
+Cada modificación realizada durante la refactorización deberá estar asociada a un registro `CC-XX`.
+
+La trazabilidad seguirá la siguiente relación:
+
+```text
+Auditoría inicial
+      ↓
+Hallazgo identificado
+      ↓
+Registro CC-XX
+      ↓
+Modificación del código
+      ↓
+Verificación de compilación / funcionamiento
+      ↓
+Actualización del registro
+      ↓
+Actualización del UML
+```
+
+De esta forma, las modificaciones realizadas en la segunda entrega no corresponden a cambios aislados, sino a mejoras justificadas a partir de problemas detectados durante la auditoría.
+
+## 10.3 Principios priorizados
+
+La refactorización priorizará los siguientes principios SOLID:
+
+| Principio | Objetivo                                                                                                           |
+| --------- | ------------------------------------------------------------------------------------------------------------------ |
+| **SRP**   | Reducir la concentración de responsabilidades en rutas y componentes.                                              |
+| **DIP**   | Reducir la dependencia directa de las rutas respecto a implementaciones concretas de repositorios.                 |
+| **OCP**   | Favorecer la extensión mediante abstracciones existentes sin modificar módulos de alto nivel innecesariamente.     |
+| **ISP**   | Mantener interfaces pequeñas y específicas para cada consumidor.                                                   |
+| **LSP**   | Verificar que las implementaciones concretas de los repositorios puedan sustituir correctamente sus abstracciones. |
+
+No se forzará la aplicación de un principio SOLID cuando no exista un problema real que lo justifique.
+
+
 # 11. Reliability
 
 SonarCloud identificó problemas relacionados con confiabilidad.
