@@ -21,12 +21,28 @@ export class PublicacionAlojamientoService {
     if (!(usuario instanceof Propietario)) {
       throw new Error("El usuario especificado no es un Propietario.");
     }
+    // NOTA (Fase 8): antes esta relación también se guardaba duplicada dentro de
+    // "usuario" (usuario.publicarAlojamiento + usuarioRepo.guardar). Ahora
+    // "alojamiento.propietarioId" es la única fuente de verdad, y se valida que
+    // coincida con el propietario que está publicando (ver Problema 9 del informe
+    // de auditoría).
+    if (alojamiento.getPropietarioId() !== propietarioId) {
+      throw new Error("El alojamiento no pertenece al propietario especificado.");
+    }
 
-    // Asocia en el dominio y guarda en persistencia
-    usuario.publicarAlojamiento(alojamiento);
     await this.alojamientoRepo.guardar(alojamiento);
-    await this.usuarioRepo.guardar(usuario);
 
     return alojamiento;
+  }
+
+  // NOTA (Fase 8): reemplaza a "Propietario.getAlojamientos()" (eliminado de la entidad).
+  // Consultar los alojamientos de un propietario es responsabilidad de esta capa de
+  // aplicación sobre la única fuente de verdad: el repositorio de alojamientos.
+  public async listarAlojamientosDePropietario(propietarioId: number): Promise<Alojamiento[]> {
+    const usuario = await buscarUsuarioPorId(this.usuarioRepo, propietarioId);
+    if (!(usuario instanceof Propietario)) {
+      throw new Error("El usuario especificado no es un Propietario.");
+    }
+    return this.alojamientoRepo.listarPorPropietarioId(propietarioId);
   }
 }

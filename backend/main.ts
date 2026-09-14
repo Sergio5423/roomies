@@ -97,8 +97,11 @@ function main() {
 
     // 4. Instanciación y gestión de Alojamiento con Reglas
     console.log("\n--- 4. Probando Entidad Alojamiento y Reglas ---");
+    // NOTA (Fase 8): "propietarioId: 1" corresponde al Propietario creado más abajo en el
+    // paso 6 (Carlos Mendoza, id 1) — ver Problema 9 del informe de auditoría.
     const alojamiento1 = new Alojamiento(
       101,
+      1,
       "Apartamento Moderno Chapinero",
       "Excelente iluminación y vista a los cerros",
       apartamento,
@@ -155,11 +158,14 @@ function main() {
       "felipe@mail.com"
     );
 
-    propietario.publicarAlojamiento(alojamiento1);
+    // NOTA (Fase 8): ya no existe "propietario.publicarAlojamiento(...)" — la relación
+    // Propietario<->Alojamiento vive únicamente en "alojamiento1.getPropietarioId()" y en
+    // el repositorio (ver Problema 9 del informe de auditoría; el flujo completo vía
+    // PublicacionAlojamientoService se demuestra en src/indexUsuario.ts).
     inquilino.guardarFavorito(alojamiento1);
 
     console.log(`- Propietario creado: ${propietario.getNombreCompleto()}`);
-    console.log(`- Alojamientos del Propietario: ${propietario.getAlojamientos().length}`);
+    console.log(`- Alojamiento "${alojamiento1.getTitulo()}" pertenece al propietario ID: ${alojamiento1.getPropietarioId()}`);
     console.log(`- Inquilino creado: ${inquilino.getNombreCompleto()}`);
     console.log(`- Favoritos del Inquilino: ${inquilino.getFavoritos().length}`);
 

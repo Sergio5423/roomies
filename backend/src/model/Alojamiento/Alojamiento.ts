@@ -9,6 +9,11 @@ import { EstadoAlojamiento } from "../estados";
 
 export class Alojamiento {
   private readonly id: number;
+  // NOTA (Fase 8): se agrega "propietarioId" para que el Alojamiento (y su repositorio)
+  // sean la única fuente de verdad de la relación Propietario<->Alojamiento (ver
+  // Problema 9 del informe de auditoría) — antes esa relación también se duplicaba como
+  // un arreglo dentro de la entidad Propietario.
+  private readonly propietarioId: number;
   private titulo: string;
   private descripcion: string;
   private tipoAlojamiento: TipoAlojamiento;
@@ -22,6 +27,7 @@ export class Alojamiento {
 
   constructor(
     id: number,
+    propietarioId: number,
     titulo: string,
     descripcion: string,
     tipoAlojamiento: TipoAlojamiento,
@@ -34,6 +40,7 @@ export class Alojamiento {
     precio: Precio
   ) {
     this.id = id;
+    this.propietarioId = propietarioId;
     this.titulo = titulo;
     this.descripcion = descripcion;
     this.tipoAlojamiento = tipoAlojamiento;
@@ -62,6 +69,7 @@ export class Alojamiento {
   }
 
   public getId(): number { return this.id; }
+  public getPropietarioId(): number { return this.propietarioId; }
   public getTitulo(): string { return this.titulo; }
   public getDescripcion(): string { return this.descripcion; }
   public getTipoAlojamiento(): TipoAlojamiento { return this.tipoAlojamiento; }
