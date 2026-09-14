@@ -124,7 +124,9 @@ function main() {
     console.log(`- Tipo Inmueble (Delegado): ${alojamiento1.getTipoAlojamientoNombre()}`);
     console.log(`- Servicios Incluidos (Delegado): ${alojamiento1.getServiciosIncluidos().join(", ")}`);
     console.log(`- Reglas registradas (${alojamiento1.getReglas().length}):`);
-    console.log(alojamiento1.getReglas());
+    // NOTA (Fase 9): se usan los getters de Regla (nuevos en esta fase, ver Problema 10)
+    // en vez de imprimir el objeto crudo.
+    console.log(alojamiento1.getReglas().map((r) => `${r.getNombre()}: ${r.getDescripcion()}`));
 
     // 5. Evaluación de Compatibilidad Real (Preferencia vs Alojamiento)
     console.log("\n--- 5. Evaluando Compatibilidad Real ---");
@@ -223,10 +225,9 @@ function main() {
 
     // Inquilino deja una reseña
     // NOTA (Fase 2): la firma real de Resena es (id, puntuacion, comentario, fecha), sin
-    // Inquilino. Además "Resena" todavía no expone ningún getter (getAutor/getPuntuacion/
-    // getComentario no existen) — ver Problema 10 del informe de auditoría; se deja como
-    // deuda técnica documentada, agregar esos getters no es parte del problema que corrige
-    // esta fase.
+    // Inquilino.
+    // NOTA (Fase 9): "Resena" ya expone getters (ver Problema 10 del informe de
+    // auditoría), así que ahora sí se puede leer su contenido directamente.
     const resena = new Resena(
       301,
       5,
@@ -234,7 +235,7 @@ function main() {
       new Date()
     );
 
-    console.log(`- Reseña registrada por ${inquilino.getNombreCompleto()} para "${alojamiento1.getTitulo()}".`);
+    console.log(`- Reseña registrada por ${inquilino.getNombreCompleto()} para "${alojamiento1.getTitulo()}": [Puntuación: ${resena.getPuntuacion()}/5] "${resena.getComentario()}"`);
 
     // 9. Prueba de Manejo de Excepciones en el Dominio
     console.log("\n--- 9. Probando Autovalidaciones de Seguridad ---");
