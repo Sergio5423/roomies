@@ -1,21 +1,20 @@
-import { RangoPresupuesto } from "./src/model/Alojamiento/RangoPresupuesto";
-import { Casa } from "./src/model/Alojamiento/Casa";
-import { Apartamento } from "./src/model/Alojamiento/Apartamento";
-import { Pensionado } from "./src/model/Alojamiento/Pensionado";
-import { Preferencia } from "./src/model/Alojamiento/Preferencia";
-import { Ubicacion } from "./src/model/Alojamiento/Ubicacion";
-import { Caracteristica } from "./src/model/Alojamiento/Caracteristica";
-import { Precio } from "./src/model/Alojamiento/Precio";
-import { Regla } from "./src/model/Alojamiento/Regla";
-import { Alojamiento } from "./src/model/Alojamiento/Alojamiento";
+import { RangoPresupuesto } from "./model/Alojamiento/RangoPresupuesto";
+import { Casa } from "./model/Alojamiento/Casa";
+import { Apartamento } from "./model/Alojamiento/Apartamento";
+import { Pensionado } from "./model/Alojamiento/Pensionado";
+import { Preferencia } from "./model/Alojamiento/Preferencia";
+import { Ubicacion } from "./model/Alojamiento/Ubicacion";
+import { Caracteristica } from "./model/Alojamiento/Caracteristica";
+import { Precio } from "./model/Alojamiento/Precio";
+import { Regla } from "./model/Alojamiento/Regla";
+import { Alojamiento } from "./model/Alojamiento/Alojamiento";
 
-// Importaciones de Usuarios y Flujo Social/Reservas
-import { Inquilino } from "./src/model/Usuario/Inquilino";
-import { Propietario } from "./src/model/Usuario/Propietario";
-import { PublicacionRoomie } from "./src/model/PublicacionRoomie";
-import { Solicitud } from "./src/model/Solicitud";
-import { Reserva } from "./src/model/Reserva";
-import { Resena } from "./src/model/Resena";
+import { Inquilino } from "./model/Usuario/Inquilino";
+import { Propietario } from "./model/Usuario/Propietario";
+import { PublicacionRoomie } from "./model/PublicacionRoomie";
+import { Solicitud } from "./model/Solicitud";
+import { Reserva } from "./model/Reserva";
+import { Resena } from "./model/Resena";
 
 function main() {
   console.log("=== INICIANDO PRUEBAS DEL DOMINIO COMPLETO ===\n");
@@ -43,7 +42,7 @@ function main() {
       false
     );
 
-    console.log("✅ Value Objects creados exitosamente.");
+    console.log("Value Objects creados exitosamente.");
     console.log(`- Rango Presupuesto: $${presupuestoFelipe.getMinimo()} - $${presupuestoFelipe.getMaximo()}`);
     console.log(`- Ubicación: ${ubicacionCentro.getDireccion()}, ${ubicacionCentro.getCiudad()}`);
 
@@ -112,6 +111,13 @@ function main() {
     console.log(`- ¿El tipo (${alojamiento1.getTipoAlojamientoNombre()}) coincide con su deseo?: ${esTipoValido}`);
     console.log(`-> COMPATIBILIDAD FINAL: ${esPrecioValido && esTipoValido ? "APROBADO" : "RECHAZADO"}`);
 
+    const solicitud = new Solicitud(
+      1,
+      new Date(),
+      "PENDIENTE",
+      alojamiento1
+    );
+
     // 6. Pruebas de Usuarios (Propietario e Inquilino)
     console.log("\n--- 6. Probando Usuarios (Propietario e Inquilino) ---");
     const propietario = new Propietario(
@@ -130,7 +136,9 @@ function main() {
       "Inquilino",
       "Activo",
       "felipe@mail.com",
-      preferenciaInquilino
+      [alojamiento1],
+      [solicitud],
+      []
     );
 
     propietario.publicarAlojamiento(alojamiento1);
@@ -140,28 +148,27 @@ function main() {
     console.log(`- Alojamientos del Propietario: ${propietario.getAlojamientos().length}`);
     console.log(`- Inquilino creado: ${inquilino.getNombreCompleto()}`);
     console.log(`- Favoritos del Inquilino: ${inquilino.getFavoritos().length}`);
-
+    
     // 7. Prueba de PublicacionRoomie
     console.log("\n--- 7. Probando Publicación de Roomie ---");
     const publicacionRoomie = new PublicacionRoomie(
-      501,
-      "Busco roomie para compartir gastos de apto en Chapinero",
-      1000,
-      1500,
+      1,
+      "Buscando Roomie",
       new Date(),
-      true,
+      "BUSCANDO",
       alojamiento1
     );
 
-    inquilino.publicarRoomie(alojamiento1);
+    inquilino.publicarRoomie(publicacionRoomie);
     console.log(`- Publicación Roomie Creada: "${publicacionRoomie.getDescripcion()}"`);
     console.log(`- Alojamiento Asociado: ${publicacionRoomie.getAlojamiento().getTitulo()}`);
+    
+    inquilino.crearSolicitud(solicitud);
 
     // 8. Flujo Completo: Solicitud -> Reserva -> Reseña
     console.log("\n--- 8. Probando Flujo de Reserva y Reseñas ---");
     
     // Inquilino crea solicitud
-    const solicitud = inquilino.crearSolicitud(alojamiento1);
     console.log(`- Solicitud generada con ID: ${solicitud.getId()} | Estado: ${solicitud.getEstado()}`);
 
     // Propietario acepta solicitud y genera reserva
@@ -173,12 +180,14 @@ function main() {
     fechaFin.setMonth(fechaFin.getMonth() + 6);
 
     const reserva = new Reserva(
-      901,
-      inquilino,
+      901,      
       fechaInicio,
       fechaFin,
       alojamiento1.getPrecio().getPrecioMensual(),
-      "Confirmada"
+      new Date(),
+      "CONFIRMADA",
+      alojamiento1,
+      inquilino
     );
 
     console.log(`- Reserva Creada: ID ${reserva.getId()} | Precio Acordado: $${reserva.getPrecioAcordado()}`);
@@ -186,13 +195,13 @@ function main() {
     // Inquilino deja una reseña
     const resena = new Resena(
       301,
-      inquilino,
       5,
       "Excelente lugar, muy limpio y el propietario fue amable.",
-      new Date()
+      new Date(),
+      inquilino,
     );
 
-    console.log(`- Reseña enviada por ${resena.getAutor().getNombreCompleto()}: [Puntuación: ${resena.getPuntuacion()}/5] "${resena.getComentario()}"`);
+    console.log(`- Reseña enviada por ${resena.getAutor()}: [Puntuación: ${resena.getPuntuacion()}/5] "${resena.getComentario()}"`);
 
     // 9. Prueba de Manejo de Excepciones en el Dominio
     console.log("\n--- 9. Probando Autovalidaciones de Seguridad ---");
@@ -200,13 +209,13 @@ function main() {
       new RangoPresupuesto(3000, 1000); // Mínimo mayor que máximo (Debe fallar)
     } catch (error) {
       if (error instanceof Error) {
-        console.log(`✅ Excepción capturada correctamente: "${error.message}"`);
+        console.log(`Excepción capturada correctamente: "${error.message}"`);
       }
     }
 
     console.log("\n=== TODAS LAS PRUEBAS FINALIZARON CON ÉXITO ===");
   } catch (error) {
-    console.error("❌ Error inesperado durante las pruebas:", error);
+    console.error("Error inesperado durante las pruebas:", error);
   }
 }
 
