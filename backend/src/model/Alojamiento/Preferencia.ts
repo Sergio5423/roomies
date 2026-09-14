@@ -20,8 +20,10 @@ export class Preferencia {
     amoblado: boolean,
     tipoAlojamiento: TipoAlojamiento
   ) {
+    // Fase 10 (ver backend/README.md, Problema 11): sentencia independiente en vez de
+    // encadenarla con el operador coma.
     this.id = id;
-    this.presupuesto = presupuesto,
+    this.presupuesto = presupuesto;
     this.distanciaMaxMinutos = distanciaMaxMinutos;
     this.numeroHabitacionesDeseadas = numeroHabitacionesDeseadas;
     this.soloConRoomieDisponible = soloConRoomieDisponible;

@@ -14,11 +14,13 @@ export class Perfil {
     edad: number,
     informacionAcademica: InformacionAcademica
   ) {
-    this.id = id,
-    this.foto = foto,
-    this.biografia = biografia,
-    this.edad = edad,
-    this.informacionAcademica = informacionAcademica
+    // Fase 10 (ver backend/README.md, Problema 11): sentencias independientes en vez de
+    // encadenarlas con el operador coma.
+    this.id = id;
+    this.foto = foto;
+    this.biografia = biografia;
+    this.edad = edad;
+    this.informacionAcademica = informacionAcademica;
   }
 
   public actualizarBiografia(nuevaBio: string): void {
