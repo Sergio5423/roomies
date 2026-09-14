@@ -1,39 +1,9 @@
-import { Regla } from "./Regla";
-import type { TipoAlojamiento } from "./ITipoAlojamiento";
+import { TipoAlojamientoBase } from "./TipoAlojamientoBase";
 
-export class Apartamento implements TipoAlojamiento {
-    private serviciosEspecificos: string[] = [];
-    private contratoAnual: boolean = false;
-    private reglasEspecificas: Regla[] = [];
-
-    constructor(serviciosIncluidos: string[] = [], contratoAnual: boolean) {
-        this.serviciosEspecificos = serviciosIncluidos;
-        this.contratoAnual = contratoAnual;
-    }
-
+// Fase 6 (ver backend/README.md, Problema 7): la lógica común de servicios/reglas/contrato
+// anual vive ahora en TipoAlojamientoBase; esta clase solo declara lo que la distingue.
+export class Apartamento extends TipoAlojamientoBase {
     public getNombreTipo(): string {
         return "APARTAMENTO";
-    }
-
-    public agregarServicio(nuevoServicio?: string) {
-        if (nuevoServicio !== undefined) {
-            this.serviciosEspecificos.push(nuevoServicio);
-        }
-    }
-
-    public getServiciosIncluidos(): string[] {
-        return this.serviciosEspecificos;
-    }
-
-    public requiereContratoAnual(): boolean {
-        return this.contratoAnual;
-    }
-
-    public agregarRegla(nuevaRegla: Regla): void {
-        this.reglasEspecificas.push(nuevaRegla);
-    }
-
-    public getReglas(): Regla[] {
-        return this.reglasEspecificas;
     }
 }
