@@ -1,3 +1,4 @@
+
 export interface BannerSlide {
   id: number;
   eyebrow: string;
@@ -14,7 +15,7 @@ export const bannerSlides: BannerSlide[] = [
     eyebrow: "ENCUENTRA TU ESPACIO",
     title: "Encuentra un lugar que se sienta como hogar.",
     description:
-      "Explora habitaciones y espacios pensados para diferentes estilos de vida y presupuestos.",
+      "Explora habitaciones, conoce sus características y encuentra una opción que se adapte a ti.",
     button: "Explorar habitaciones",
     route: "/habitaciones",
     image:
@@ -22,24 +23,25 @@ export const bannerSlides: BannerSlide[] = [
   },
   {
     id: 2,
-    eyebrow: "CONECTA CON PERSONAS",
-    title: "Encuentra un roommate compatible contigo.",
+    eyebrow: "ENCUENTRA TU ROOMIE",
+    title: "Comparte tu espacio con alguien compatible contigo.",
     description:
-      "Conoce personas con intereses y preferencias de convivencia similares a las tuyas.",
-    button: "Encontrar roommate",
-    route: "/roommates",
+      "Conoce personas con intereses, preferencias y formas de convivencia similares a las tuyas.",
+    button: "Encontrar roomies",
+    route: "/roomies",
     image:
       "https://images.pexels.com/photos/7683827/pexels-photo-7683827.jpeg?auto=compress&cs=tinysrgb&w=1200",
   },
   {
     id: 3,
-    eyebrow: "COMPARTE TU ESPACIO",
-    title: "¿Tienes una habitación disponible?",
+    eyebrow: "PUBLICA TU HABITACIÓN",
+    title: "¿Tienes un espacio disponible?",
     description:
-      "Publica tu espacio y encuentra personas interesadas en vivir contigo.",
+      "Publica tu habitación y conecta con personas que buscan un lugar donde vivir.",
     button: "Publicar habitación",
     route: "/publicar",
     image:
       "https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=1600",
   },
 ];
+

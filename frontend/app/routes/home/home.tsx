@@ -12,17 +12,24 @@ export default function Home() {
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-slate-50">
-        <Banner />
+      <main className="relative min-h-screen overflow-hidden bg-[#F7F5F0] text-slate-800">
 
-        <QuickActions />
-        <TrustSection />
+        {/* Ambiente visual */}
+        <div className="pointer-events-none absolute -left-40 -top-40 h-96 w-96 rounded-full bg-emerald-200/20 blur-3xl" />
 
-        <ExploreRooms />
-        <ExploreLocation />
+        <div className="pointer-events-none absolute right-[-10rem] top-[35rem] h-96 w-96 rounded-full bg-blue-200/20 blur-3xl" />
+
+        <div className="relative">
+          <Banner />
+
+          <QuickActions />
+          <TrustSection />
+
+          <ExploreRooms />
+          <ExploreLocation />
+        </div>
+
         <Footer />
-
-
       </main>
     </>
   );
