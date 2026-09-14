@@ -33,4 +33,8 @@ export class InMemoryAlojamientoRepository implements IAlojamientoRepository {
     this.alojamientos.splice(index, 1);
     return true;
   }
+
+  public async listarPorPropietarioId(propietarioId: number): Promise<Alojamiento[]> {
+    return this.alojamientos.filter((a) => a.getPropietarioId() === propietarioId);
+  }
 }

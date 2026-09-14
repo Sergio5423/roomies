@@ -21,7 +21,10 @@ async function main() {
   const car = new Caracteristica(2, 50, 2, true, false);
   const precio = new Precio(1500);
 
+  // NOTA (Fase 8): "propietarioId" es un valor de prueba arbitrario — este script no
+  // ejercita ningún Propietario (ver Problema 9 del informe de auditoría).
   const nuevoAlojamiento = new Alojamiento(
+    1,
     1,
     "Apartamento Chapinero",
     "Bonito apto",

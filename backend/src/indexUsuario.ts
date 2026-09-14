@@ -15,7 +15,7 @@ import { Precio } from "./model/Alojamiento/Precio.js";
 import { EstadoUsuario, EstadoAlojamiento } from "./model/estados.js";
 
 async function probarUsuarios() {
-  const { usuarioController: controller } = buildApp();
+  const { usuarioController: controller, publicacionAlojamientoService } = buildApp();
 
   const prop = new Propietario(1, "Carlos", "300", "Propietario", EstadoUsuario.ACTIVO, "carlos@test.com");
   const inq = new Inquilino(2, "Felipe", "311", "Inquilino", EstadoUsuario.ACTIVO, "felipe@test.com");
@@ -27,8 +27,11 @@ async function probarUsuarios() {
   // (no solo compilando), que dividir UsuarioService en FavoritosService y
   // PublicacionAlojamientoService no cambió el comportamiento observable desde el
   // controller (ver Problema 4 del informe de auditoría).
+  // NOTA (Fase 8): "propietarioId: prop.getId()" es lo que ahora valida
+  // PublicacionAlojamientoService al publicar (ver Problema 9 del informe de auditoría).
   const alojamiento = new Alojamiento(
     1,
+    prop.getId(),
     "Apartamento de prueba",
     "Descripción de prueba",
     new Apartamento(["Luz"], false),
@@ -43,6 +46,18 @@ async function probarUsuarios() {
 
   console.log("Publicar alojamiento (Propietario):", await controller.publicarAlojamiento(prop.getId(), alojamiento));
   console.log("Agregar favorito (Inquilino):", await controller.agregarFavorito(inq.getId(), alojamiento.getId()));
+
+  // NOTA (Fase 8): verifica que la única fuente de verdad (el repositorio, vía
+  // listarAlojamientosDePropietario) refleja el alojamiento publicado, ahora que
+  // Propietario ya no lleva su propio arreglo (ver Problema 9 del informe de auditoría).
+  const alojamientosDelPropietario = await publicacionAlojamientoService.listarAlojamientosDePropietario(prop.getId());
+  console.log(
+    `Alojamientos del propietario (vía repositorio): ${alojamientosDelPropietario.length}`
+  );
+  console.assert(
+    alojamientosDelPropietario.length === 1 && alojamientosDelPropietario[0]?.getId() === alojamiento.getId(),
+    "[Fase 8] Se esperaba que el repositorio devolviera el alojamiento recién publicado."
+  );
 }
 
 probarUsuarios();
