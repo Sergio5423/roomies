@@ -1,3 +1,13 @@
+// Antipatrón corregido (Fase 2 del plan de refactorización — ver backend/README.md, Problema 2):
+// este archivo (entry point real del proyecto: package.json -> "main"/scripts dev y start)
+// había quedado desincronizado del modelo de dominio: llamaba a constructores y métodos de
+// Inquilino, Solicitud, Reserva, Resena y PublicacionRoomie con firmas que ya no existían,
+// por lo que el proyecto no compilaba (14 errores de "tsc --noEmit"). Es el síntoma típico
+// de "Shotgun Surgery": el dominio cambió y no todos sus consumidores se actualizaron.
+//
+// Corrección aplicada: se ajustaron únicamente las llamadas de este archivo para que
+// coincidan con las firmas reales ya implementadas en src/model — no se modificó ninguna
+// clase de dominio. Cada punto corregido queda anotado con "NOTA (Fase 2)" más abajo.
 import { RangoPresupuesto } from "./src/model/Alojamiento/RangoPresupuesto";
 import { Casa } from "./src/model/Alojamiento/Casa";
 import { Apartamento } from "./src/model/Alojamiento/Apartamento";
@@ -123,14 +133,16 @@ function main() {
       "carlos@mail.com"
     );
 
+    // NOTA (Fase 2): Inquilino ya no recibe una Preferencia en el constructor (esa asociación
+    // no existe en el modelo actual); "preferenciaInquilino" se sigue usando por separado
+    // más abajo para las comprobaciones de compatibilidad.
     const inquilino = new Inquilino(
       2,
       "Felipe Gómez",
       "3119876543",
       "Inquilino",
       "Activo",
-      "felipe@mail.com",
-      preferenciaInquilino
+      "felipe@mail.com"
     );
 
     propietario.publicarAlojamiento(alojamiento1);
@@ -143,17 +155,19 @@ function main() {
 
     // 7. Prueba de PublicacionRoomie
     console.log("\n--- 7. Probando Publicación de Roomie ---");
+    // NOTA (Fase 2): PublicacionRoomie recibe 5 argumentos (id, descripcion, fecha, estado,
+    // alojamiento) — no incluye presupuestoMinimo/presupuestoMaximo (campos comentados/no
+    // existentes en la clase actual).
     const publicacionRoomie = new PublicacionRoomie(
       501,
       "Busco roomie para compartir gastos de apto en Chapinero",
-      1000,
-      1500,
       new Date(),
-      true,
+      "ACTIVA",
       alojamiento1
     );
 
-    inquilino.publicarRoomie(alojamiento1);
+    // NOTA (Fase 2): se publica la PublicacionRoomie recién creada, no el Alojamiento.
+    inquilino.publicarRoomie(publicacionRoomie);
     console.log(`- Publicación Roomie Creada: "${publicacionRoomie.getDescripcion()}"`);
     console.log(`- Alojamiento Asociado: ${publicacionRoomie.getAlojamiento().getTitulo()}`);
 
@@ -161,7 +175,10 @@ function main() {
     console.log("\n--- 8. Probando Flujo de Reserva y Reseñas ---");
     
     // Inquilino crea solicitud
-    const solicitud = inquilino.crearSolicitud(alojamiento1);
+    // NOTA (Fase 2): "crearSolicitud" recibe una Solicitud ya construida y devuelve "void"
+    // (antes se le pasaba un Alojamiento y se esperaba que devolviera la Solicitud).
+    const solicitud = new Solicitud(801, new Date(), "PENDIENTE", alojamiento1);
+    inquilino.crearSolicitud(solicitud);
     console.log(`- Solicitud generada con ID: ${solicitud.getId()} | Estado: ${solicitud.getEstado()}`);
 
     // Propietario acepta solicitud y genera reserva
@@ -172,27 +189,36 @@ function main() {
     const fechaFin = new Date();
     fechaFin.setMonth(fechaFin.getMonth() + 6);
 
+    // NOTA (Fase 2): la firma real de Reserva no incluye al Inquilino y sí requiere
+    // fechaReserva y alojamiento (antes se pasaba el Inquilino y faltaba el Alojamiento,
+    // y sobraba/faltaba un argumento según la posición).
     const reserva = new Reserva(
       901,
-      inquilino,
       fechaInicio,
       fechaFin,
       alojamiento1.getPrecio().getPrecioMensual(),
-      "Confirmada"
+      new Date(),
+      "PENDIENTE",
+      alojamiento1
     );
+    reserva.confirmarReserva();
 
-    console.log(`- Reserva Creada: ID ${reserva.getId()} | Precio Acordado: $${reserva.getPrecioAcordado()}`);
+    console.log(`- Reserva Creada: ID ${reserva.getId()} | Estado: ${reserva.getEstado()}`);
 
     // Inquilino deja una reseña
+    // NOTA (Fase 2): la firma real de Resena es (id, puntuacion, comentario, fecha), sin
+    // Inquilino. Además "Resena" todavía no expone ningún getter (getAutor/getPuntuacion/
+    // getComentario no existen) — ver Problema 10 del informe de auditoría; se deja como
+    // deuda técnica documentada, agregar esos getters no es parte del problema que corrige
+    // esta fase.
     const resena = new Resena(
       301,
-      inquilino,
       5,
       "Excelente lugar, muy limpio y el propietario fue amable.",
       new Date()
     );
 
-    console.log(`- Reseña enviada por ${resena.getAutor().getNombreCompleto()}: [Puntuación: ${resena.getPuntuacion()}/5] "${resena.getComentario()}"`);
+    console.log(`- Reseña registrada por ${inquilino.getNombreCompleto()} para "${alojamiento1.getTitulo()}".`);
 
     // 9. Prueba de Manejo de Excepciones en el Dominio
     console.log("\n--- 9. Probando Autovalidaciones de Seguridad ---");
