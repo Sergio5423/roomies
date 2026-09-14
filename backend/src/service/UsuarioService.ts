@@ -6,6 +6,10 @@ import { Alojamiento } from "../model/Alojamiento/Alojamiento.js";
 import { Perfil } from "../model/Usuario/Perfil.js";
 import type { IUsuarioRepository } from "../repository/IUsuarioRepository.js";
 import type { IAlojamientoRepository } from "../repository/IAlojamientoRepository.js";
+// NOTA (Fase 4): "no encontrado" ahora se expresa con un tipo de error explícito
+// (NotFoundError) para que el controlador lo mapee siempre a 404, sin importar desde
+// qué método se haya originado (ver Problema 6 del informe de auditoría).
+import { NotFoundError } from "../model/errors.js";
 
 export class UsuarioService {
   constructor(
@@ -24,7 +28,7 @@ export class UsuarioService {
   public async obtenerPorId(id: number): Promise<Usuario> {
     const usuario = await this.usuarioRepo.buscarPorId(id);
     if (!usuario) {
-      throw new Error(`Usuario con ID ${id} no encontrado.`);
+      throw new NotFoundError(`Usuario con ID ${id} no encontrado.`);
     }
     return usuario;
   }
@@ -37,7 +41,7 @@ export class UsuarioService {
 
     const alojamiento = await this.alojamientoRepo.buscarPorId(alojamientoId);
     if (!alojamiento) {
-      throw new Error(`Alojamiento con ID ${alojamientoId} no existe.`);
+      throw new NotFoundError(`Alojamiento con ID ${alojamientoId} no existe.`);
     }
 
     // Lógica del dominio

@@ -1,6 +1,10 @@
 // src/service/AlojamientoService.ts
 import { Alojamiento } from "../model/Alojamiento/Alojamiento";
 import type { IAlojamientoRepository } from "../repository/IAlojamientoRepository";
+// NOTA (Fase 4): "no encontrado" ahora se expresa con un tipo de error explícito
+// (NotFoundError) para que el controlador lo mapee siempre a 404, sin importar desde
+// qué método se haya originado (ver Problema 6 del informe de auditoría).
+import { NotFoundError } from "../model/errors.js";
 
 export class AlojamientoService {
   constructor(private readonly alojamientoRepo: IAlojamientoRepository) {}
@@ -16,7 +20,7 @@ export class AlojamientoService {
   public async obtenerPorId(id: number): Promise<Alojamiento> {
     const alojamiento = await this.alojamientoRepo.buscarPorId(id);
     if (!alojamiento) {
-      throw new Error(`Alojamiento con ID ${id} no fue encontrado.`);
+      throw new NotFoundError(`Alojamiento con ID ${id} no fue encontrado.`);
     }
     return alojamiento;
   }
