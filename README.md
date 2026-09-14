@@ -5,6 +5,26 @@ ROOMIES es una plataforma web orientada a la búsqueda de habitaciones y compañ
 El proyecto se desarrolla con una arquitectura frontend/backend separada y aplica principios de diseño de software, separación de responsabilidades y patrones de diseño para facilitar su mantenimiento y evolución.
 
 ---
+---
+
+# 📸 Evidencias de la interfaz
+
+## 🏠 Inicio
+![Inicio de ROOMIES](assets/home.png)
+
+## 🏘️ Habitaciones
+![Listado de habitaciones](assets/habitaciones.png)
+
+## 🏠 Detalle de habitación
+![Detalle de habitación](assets/habitacion-detalle.png)
+
+## 👥 Roomies
+![Listado de roomies](assets/roomies.png)
+
+## 👤 Perfil de roomie
+![Perfil de roomie](docs/assets/roomie-perfil.png)
+
+---
 
 ## 📌 Repositorio
 
