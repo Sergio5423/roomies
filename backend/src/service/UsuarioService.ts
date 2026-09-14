@@ -1,21 +1,19 @@
 // src/service/UsuarioService.ts
+//
+// Antipatrón corregido (Fase 5 del plan de refactorización — ver backend/README.md,
+// Problema 4): esta clase concentraba registro genérico de usuarios, gestión de favoritos
+// (rol Inquilino), publicación de alojamientos (rol Propietario) y actualización de perfil,
+// cuatro responsabilidades sin relación entre sí (violación de SRP). Esos tres últimos casos
+// de uso se movieron a FavoritosService, PublicacionAlojamientoService y PerfilService
+// respectivamente. Esta clase queda únicamente con lo genérico de "Usuario": registro y
+// búsqueda por id — por eso ya no depende de IAlojamientoRepository (esa dependencia era
+// solo para favoritos/publicación).
 import { Usuario } from "../model/Usuario/Usuario.js";
-import { Inquilino } from "../model/Usuario/Inquilino.js";
-import { Propietario } from "../model/Usuario/Propietario.js";
-import { Alojamiento } from "../model/Alojamiento/Alojamiento.js";
-import { Perfil } from "../model/Usuario/Perfil.js";
 import type { IUsuarioRepository } from "../repository/IUsuarioRepository.js";
-import type { IAlojamientoRepository } from "../repository/IAlojamientoRepository.js";
-// NOTA (Fase 4): "no encontrado" ahora se expresa con un tipo de error explícito
-// (NotFoundError) para que el controlador lo mapee siempre a 404, sin importar desde
-// qué método se haya originado (ver Problema 6 del informe de auditoría).
-import { NotFoundError } from "../model/errors.js";
+import { buscarUsuarioPorId } from "./buscarUsuarioPorId.js";
 
 export class UsuarioService {
-  constructor(
-    private readonly usuarioRepo: IUsuarioRepository,
-    private readonly alojamientoRepo: IAlojamientoRepository
-  ) {}
+  constructor(private readonly usuarioRepo: IUsuarioRepository) {}
 
   public async registrarUsuario(usuario: Usuario): Promise<Usuario> {
     const existe = await this.usuarioRepo.buscarPorEmail(usuario.getEmail());
@@ -26,46 +24,6 @@ export class UsuarioService {
   }
 
   public async obtenerPorId(id: number): Promise<Usuario> {
-    const usuario = await this.usuarioRepo.buscarPorId(id);
-    if (!usuario) {
-      throw new NotFoundError(`Usuario con ID ${id} no encontrado.`);
-    }
-    return usuario;
-  }
-
-  public async agregarAlojamientoAFavoritos(inquilinoId: number, alojamientoId: number): Promise<void> {
-    const usuario = await this.obtenerPorId(inquilinoId);
-    if (!(usuario instanceof Inquilino)) {
-      throw new Error("El usuario especificado no es un Inquilino.");
-    }
-
-    const alojamiento = await this.alojamientoRepo.buscarPorId(alojamientoId);
-    if (!alojamiento) {
-      throw new NotFoundError(`Alojamiento con ID ${alojamientoId} no existe.`);
-    }
-
-    // Lógica del dominio
-    usuario.guardarFavorito(alojamiento);
-    await this.usuarioRepo.guardar(usuario);
-  }
-
-  public async publicarAlojamientoPropietario(propietarioId: number, alojamiento: Alojamiento): Promise<Alojamiento> {
-    const usuario = await this.obtenerPorId(propietarioId);
-    if (!(usuario instanceof Propietario)) {
-      throw new Error("El usuario especificado no es un Propietario.");
-    }
-
-    // Asocia en el dominio y guarda en persistencia
-    usuario.publicarAlojamiento(alojamiento);
-    await this.alojamientoRepo.guardar(alojamiento);
-    await this.usuarioRepo.guardar(usuario);
-
-    return alojamiento;
-  }
-
-  public async actualizarPerfilUsuario(usuarioId: number, nuevoPerfil: Perfil): Promise<Usuario> {
-    const usuario = await this.obtenerPorId(usuarioId);
-    usuario.asociarPerfil(nuevoPerfil);
-    return await this.usuarioRepo.guardar(usuario);
+    return buscarUsuarioPorId(this.usuarioRepo, id);
   }
 }
