@@ -36,6 +36,18 @@ async function main() {
   console.log("1. Guardando alojamiento:", await controller.crear(nuevoAlojamiento));
   console.log("2. Cambiando estado:", await controller.cambiarEstado(1, "Ocupado"));
   console.log("3. Consultando alojamientos:", await controller.obtener(1));
+
+  // NOTA (Fase 4): caso de verificación del Problema 6 — "cambiarEstado" sobre un ID
+  // inexistente debía responder 404 (mismo error "no encontrado" que "obtener"), y antes
+  // de esta fase respondía 400 por estar hardcodeado en el método. Se deja este caso como
+  // smoke test manual del fix, ya que el proyecto todavía no cuenta con un framework de
+  // pruebas automatizadas.
+  const resultadoNoEncontrado = await controller.cambiarEstado(999, "Ocupado");
+  console.log("4. Cambiando estado de ID inexistente (debe ser 404):", resultadoNoEncontrado);
+  console.assert(
+    resultadoNoEncontrado.status === 404,
+    `[Fase 4] Se esperaba status 404 para un alojamiento inexistente, se obtuvo ${resultadoNoEncontrado.status}`
+  );
 }
 
 main();
