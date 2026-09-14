@@ -5,7 +5,6 @@ ROOMIES es una plataforma web orientada a la búsqueda de habitaciones y compañ
 El proyecto se desarrolla con una arquitectura frontend/backend separada y aplica principios de diseño de software, separación de responsabilidades y patrones de diseño para facilitar su mantenimiento y evolución.
 
 ---
----
 
 # 📸 Evidencias de la interfaz
 
