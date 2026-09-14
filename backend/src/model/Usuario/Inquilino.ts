@@ -2,6 +2,7 @@ import { Usuario } from './Usuario'
 import { Alojamiento } from '../Alojamiento/Alojamiento';
 import { Solicitud } from '../Solicitud';
 import { PublicacionRoomie } from '../PublicacionRoomie'
+import { EstadoUsuario } from '../estados';
 
 export class Inquilino extends Usuario {
   private favoritos: Alojamiento[] = [];
@@ -13,7 +14,7 @@ export class Inquilino extends Usuario {
     nombreCompleto: string,
     telefono: string,
     rol: string,
-    estado: string,
+    estado: EstadoUsuario,
     email: string,
     favoritos: Alojamiento[] = [],
     solicitudes: Solicitud[] = [],

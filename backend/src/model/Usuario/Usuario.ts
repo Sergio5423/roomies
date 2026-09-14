@@ -1,11 +1,14 @@
 import { Perfil } from './Perfil'
+// NOTA (Fase 7): "estado" pasó de "string" a EstadoUsuario (ver Problema 8 del informe de
+// auditoría) — mismos valores usados hasta ahora, ahora verificados en compilación.
+import { EstadoUsuario } from '../estados'
 
 export abstract class Usuario {
   private readonly id: number;
   private nombreCompleto: string;
   private telefono: string;
   private readonly rol: string;
-  private estado: string;
+  private estado: EstadoUsuario;
   private email: string;
   //private passwordHash: PasswordHash
   private perfil?: Perfil
@@ -15,7 +18,7 @@ export abstract class Usuario {
     nombreCompleto: string,
     telefono: string,
     rol: string,
-    estado: string,
+    estado: EstadoUsuario,
     email: string
   ) {
     this.id = id;
@@ -32,7 +35,7 @@ export abstract class Usuario {
     this.email = datos.email;
   }
 
-  public actualizarEstado(nuevoEstado: string): void {
+  public actualizarEstado(nuevoEstado: EstadoUsuario): void {
     this.estado = nuevoEstado;
   }
 
@@ -44,7 +47,7 @@ export abstract class Usuario {
   public getNombreCompleto(): string { return this.nombreCompleto; }
   public getTelefono(): string { return this.telefono; }
   public getRol(): string { return this.rol; }
-  public getEstado(): string { return this.estado; }
+  public getEstado(): EstadoUsuario { return this.estado; }
   public getEmail(): string { return this.email; }
   public getPerfil(): Perfil | undefined { return this.perfil; }
 }

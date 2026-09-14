@@ -3,6 +3,9 @@ import { Caracteristica } from "./Caracteristica";
 import { Precio } from "./Precio";
 import { Ubicacion } from "./Ubicacion";
 import { Regla } from "./Regla"
+// NOTA (Fase 7): "estado" pasó de "string" a EstadoAlojamiento (ver Problema 8 del informe
+// de auditoría) — mismos valores usados hasta ahora, ahora verificados en compilación.
+import { EstadoAlojamiento } from "../estados";
 
 export class Alojamiento {
   private readonly id: number;
@@ -12,7 +15,7 @@ export class Alojamiento {
   private imagenes: string[];
   private puntuacionPromedio: number;
   private readonly fechaPublicacion: Date;
-  private estado: string;
+  private estado: EstadoAlojamiento;
   private ubicacion: Ubicacion;
   private caracteristicas: Caracteristica;
   private precio: Precio;
@@ -25,7 +28,7 @@ export class Alojamiento {
     imagenes: string[],
     puntuacionPromedio: number,
     fechaPublicacion: Date,
-    estado: string,
+    estado: EstadoAlojamiento,
     ubicacion: Ubicacion,
     caracteristicas: Caracteristica,
     precio: Precio
@@ -54,7 +57,7 @@ export class Alojamiento {
     this.precio = datos.precio;
   }
 
-  public actualizarEstado(nuevoEstado: string): void {
+  public actualizarEstado(nuevoEstado: EstadoAlojamiento): void {
     this.estado = nuevoEstado;
   }
 
@@ -65,7 +68,7 @@ export class Alojamiento {
   public getImagenes(): string[] { return [...this.imagenes]; }
   public getPuntuacionPromedio(): number { return this.puntuacionPromedio; }
   public getFechaPublicacion(): Date { return this.fechaPublicacion; }
-  public getEstado(): string { return this.estado; }
+  public getEstado(): EstadoAlojamiento { return this.estado; }
   public getUbicacion(): Ubicacion { return this.ubicacion; }
   public getCaracteristicas(): Caracteristica { return this.caracteristicas; }
   public getPrecio(): Precio { return this.precio; }
