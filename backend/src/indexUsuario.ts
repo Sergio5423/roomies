@@ -1,4 +1,3 @@
-// Pruebas sencillas en el punto de entrada
 import { InMemoryUsuarioRepository } from "./repository/InMemoryUsuarioRepository.js";
 import { InMemoryAlojamientoRepository } from "./repository/InMemoryAlojamientoRepository.js";
 import { UsuarioService } from "./service/UsuarioService.js";

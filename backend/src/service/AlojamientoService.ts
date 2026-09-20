@@ -1,4 +1,3 @@
-// src/service/AlojamientoService.ts
 import { Alojamiento } from "../model/Alojamiento/Alojamiento";
 import type { IAlojamientoRepository } from "../repository/IAlojamientoRepository";
 
@@ -27,7 +26,7 @@ export class AlojamientoService {
 
   public async cambiarEstadoAlojamiento(id: number, nuevoEstado: string): Promise<Alojamiento> {
     const alojamiento = await this.obtenerPorId(id);
-    alojamiento.actualizarEstado(nuevoEstado); // Método del dominio
+    alojamiento.actualizarEstado(nuevoEstado);
     return await this.alojamientoRepo.guardar(alojamiento);
   }
 }
