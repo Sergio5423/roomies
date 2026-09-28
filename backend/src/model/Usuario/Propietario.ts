@@ -1,3 +1,4 @@
+//src/model/Usuario/Propietario.ts
 import { Usuario } from './Usuario';
 import { Alojamiento } from '../Alojamiento/Alojamiento';
 
@@ -34,7 +35,7 @@ export class Propietario extends Usuario {
     return true;
   }
 
-  public eliminarAlojamiento(id: number): boolean {
+  public eliminarAlojamiento(id: string): boolean {
     const indice = this.alojamientosPropietario.findIndex((a) => a.getId() === id);
 
     if (indice === -1) {

@@ -1,5 +1,5 @@
 import { RangoPresupuesto } from "./RangoPresupuesto";
-import type { TipoAlojamiento } from "./ITipoAlojamiento";
+import type { TipoAlojamiento } from "./TipoAlojamiento";
 
 
 export class Preferencia {

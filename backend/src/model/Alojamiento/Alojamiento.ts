@@ -1,11 +1,11 @@
-import type { TipoAlojamiento } from "./ITipoAlojamiento";
+import type { TipoAlojamiento } from "./TipoAlojamiento";
 import { Caracteristica } from "./Caracteristica";
 import { Precio } from "./Precio";
 import { Ubicacion } from "./Ubicacion";
 import { Regla } from "./Regla"
 
 export class Alojamiento {
-  private readonly id: number;
+  private readonly id: string;
   private titulo: string;
   private descripcion: string;
   private tipoAlojamiento: TipoAlojamiento;
@@ -18,7 +18,7 @@ export class Alojamiento {
   private precio: Precio;
 
   constructor(
-    id: number,
+    id: string,
     titulo: string,
     descripcion: string,
     tipoAlojamiento: TipoAlojamiento,
@@ -58,7 +58,7 @@ export class Alojamiento {
     this.estado = nuevoEstado;
   }
 
-  public getId(): number { return this.id; }
+  public getId(): string { return this.id; }
   public getTitulo(): string { return this.titulo; }
   public getDescripcion(): string { return this.descripcion; }
   public getTipoAlojamiento(): TipoAlojamiento { return this.tipoAlojamiento; }
@@ -75,11 +75,11 @@ export class Alojamiento {
   }
 
   public getRequiereContratoAnual(): boolean {
-    return this.tipoAlojamiento.requiereContratoAnual();
+    return this.tipoAlojamiento.getContratoAnual();
   }
 
   public getServiciosIncluidos(): string[] {
-    return this.tipoAlojamiento.getServiciosIncluidos();
+    return this.tipoAlojamiento.getServicios();
   }
 
   public getReglas(): Regla[] {
