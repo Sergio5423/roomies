@@ -71,7 +71,7 @@ export class Alojamiento {
   public getPrecio(): Precio { return this.precio; }
 
   public getTipoAlojamientoNombre(): string {
-    return this.tipoAlojamiento.getNombreTipo();
+    return this.tipoAlojamiento.getNombre();
   }
 
   public getRequiereContratoAnual(): boolean {

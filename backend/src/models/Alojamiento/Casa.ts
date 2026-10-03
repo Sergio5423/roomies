@@ -4,7 +4,7 @@ export class Casa extends TipoAlojamiento {
     
     private nombre: string = "Casa";
 
-    public getNombreTipo(): string {
+    public getNombre(): string {
         return this.nombre;
     }
 

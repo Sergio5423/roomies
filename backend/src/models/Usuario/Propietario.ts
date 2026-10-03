@@ -1,4 +1,3 @@
-//src/model/Usuario/Propietario.ts
 import { Usuario } from './Usuario';
 import { Alojamiento } from '../Alojamiento/Alojamiento';
 
@@ -6,15 +5,14 @@ export class Propietario extends Usuario {
   private alojamientosPropietario: Alojamiento[];
 
   constructor(
-    id: number,
-    nombreCompleto: string,
-    telefono: string,
-    rol: string,
-    estado: string,
+    id: string,
+    first_name: string,
+    last_name: string,    
     email: string,
+    telefono: string,
     alojamientosPropietario: Alojamiento[] = []
-  ) {
-    super(id, nombreCompleto, telefono, rol, estado, email);
+  ) {    
+    super(id, first_name, last_name, email, telefono, 'ARRENDATARIO', 'activo');
     this.alojamientosPropietario = alojamientosPropietario;
   }
 
