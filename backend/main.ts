@@ -3,8 +3,7 @@ import type { Request, Response, NextFunction } from 'express'
 import cors from 'cors';
 
 // Repositorios de Persistencia (Supabase)
-import { SupabaseAlojamientoRepository } from './src/repository/SupabaseAlojamientoRepository';
-import { SupabasePropietarioRepository } from './src/repository/SupabasePropietarioRepository';
+import { repositorioFactory } from './src/config/repositorios';
 
 // Servicios y Controladores
 import { AlojamientoService } from './src/services/Alojamiento/alojamiento.service';
@@ -31,8 +30,8 @@ app.use(express.json());
 // ==========================================
 // 2. Instanciación e Inyección de Dependencias
 // ==========================================
-const alojamientoRepository = new SupabaseAlojamientoRepository();
-const propietarioRepository = new SupabasePropietarioRepository();
+const alojamientoRepository = repositorioFactory.crearAlojamientoRepository();
+const propietarioRepository = repositorioFactory.crearPropietarioRepository();
 
 const alojamientoService = new AlojamientoService(
   alojamientoRepository, 

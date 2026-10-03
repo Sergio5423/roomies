@@ -1,3 +1,4 @@
+import { AlojamientoBuilder } from '../../models/Builder/AlojamientoBuilder';
 import { Alojamiento } from '../../models/Alojamiento/Alojamiento';
 import { Ubicacion } from '../../models/Alojamiento/Ubicacion';
 import { Caracteristica } from '../../models/Alojamiento/Caracteristica';
@@ -58,19 +59,15 @@ export class AlojamientoService {
     );
 
     // 5. Instanciar Entidad de Dominio
-    const nuevoAlojamiento = new Alojamiento(
-      uuidv4(),
-      datosAlojamiento.titulo,
-      datosAlojamiento.descripcion,
-      instanciaTipo, // Instancia concreta que hereda de TipoAlojamiento
-      datosAlojamiento.imagenes || [],
-      0, // Puntuación promedio inicial
-      new Date(),
-      "disponible",
-      ubicacion,
-      caracteristica,
-      precio
-    );
+    const nuevoAlojamiento = new AlojamientoBuilder()
+      .conIdentidad(uuidv4())
+      .conDescripcion(datosAlojamiento.titulo, datosAlojamiento.descripcion)
+      .conTipo(instanciaTipo)
+      .conImagenes(datosAlojamiento.imagenes || [])
+      .conUbicacion(ubicacion)
+      .conCaracteristicas(caracteristica)
+      .conPrecio(precio)
+      .construir();
 
     // 6. Vincular la publicación con el Propietario en memoria/dominio
     propietario.publicarAlojamiento(nuevoAlojamiento);
@@ -115,25 +112,25 @@ export class AlojamientoService {
       )
       : alojamientoExistente.getCaracteristicas();
 
-    const p = datosActualizados.precio || {};
-    const precio = datosActualizados.precio
+    const p = datosActualizados.precio ?? {};
+    const precio = datosActualizados.precio != null
       ? new Precio(Number(typeof p === 'object' ? p.precioMensual ?? p.monto : p))
       : alojamientoExistente.getPrecio();
 
     // Instanciar el objeto Alojamiento con los datos nuevos para pasarlo al método de la entidad
-    const datosNuevos = new Alojamiento(
-      alojamientoExistente.getId(),
-      datosActualizados.titulo || alojamientoExistente.getTitulo(),
-      datosActualizados.descripcion || alojamientoExistente.getDescripcion(),
-      tipo,
-      datosActualizados.imagenes || alojamientoExistente.getImagenes(),
-      datosActualizados.puntuacionPromedio ?? alojamientoExistente.getPuntuacionPromedio(),
-      alojamientoExistente.getFechaPublicacion(),
-      alojamientoExistente.getEstado(),
-      ubicacion,
-      caracteristicas,
-      precio
-    );
+    const datosNuevos = new AlojamientoBuilder()
+      .conIdentidad(alojamientoExistente.getId())
+      .conDescripcion(
+        datosActualizados.titulo ?? alojamientoExistente.getTitulo(),
+        datosActualizados.descripcion ?? alojamientoExistente.getDescripcion())
+      .conTipo(tipo)
+      .conImagenes(datosActualizados.imagenes ?? alojamientoExistente.getImagenes())
+      .conPuntuacion(datosActualizados.puntuacionPromedio ?? alojamientoExistente.getPuntuacionPromedio())
+      .conPublicacion(alojamientoExistente.getFechaPublicacion(), alojamientoExistente.getEstado())
+      .conUbicacion(ubicacion)
+      .conCaracteristicas(caracteristicas)
+      .conPrecio(precio)
+      .construir();
 
     // Mutación en la entidad del dominio
     alojamientoExistente.actualizarAlojamiento(datosNuevos);

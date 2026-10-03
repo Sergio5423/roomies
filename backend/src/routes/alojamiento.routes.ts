@@ -2,16 +2,15 @@
 import { Router } from 'express';
 import { AlojamientoController } from '../controllers//Alojamiento/alojamiento.controller';
 import { AlojamientoService } from '../services/Alojamiento/alojamiento.service';
-import { SupabaseAlojamientoRepository } from '../repository/SupabaseAlojamientoRepository';
-import { SupabasePropietarioRepository } from '../repository/SupabasePropietarioRepository';
+import { repositorioFactory } from '../config/repositorios';
 import { authenticateToken } from '../middlewares/auth.middleware';
 import { authorizeRoles } from '../middlewares/role.middleware';
 
 const router = Router();
 
 // Instanciación de Repositorios y Servicio (Inyección de Dependencias)
-const alojamientoRepository = new SupabaseAlojamientoRepository();
-const propietarioRepository = new SupabasePropietarioRepository();
+const alojamientoRepository = repositorioFactory.crearAlojamientoRepository();
+const propietarioRepository = repositorioFactory.crearPropietarioRepository();
 const alojamientoService = new AlojamientoService(alojamientoRepository, propietarioRepository);
 
 // Instanciación del Controlador

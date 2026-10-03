@@ -1,6 +1,6 @@
 import type { IAlojamientoRepository } from './IAlojamientoRepository';
 import { Alojamiento } from '../models/Alojamiento/Alojamiento';
-import { TipoAlojamientoFactory } from '../models/Factory/TipoAlojamientoFactory';
+import { AlojamientoMapper } from './AlojamientoMapper';
 import { supabase } from '../config/supabase';
 
 export class SupabaseAlojamientoRepository implements IAlojamientoRepository {
@@ -55,22 +55,7 @@ async guardar(alojamiento: Alojamiento, propietarioId: string): Promise<Alojamie
 
     if (error || !data) return null;
 
-    // Se reconstruye la instancia de TipoAlojamiento mediante la fábrica del dominio
-    const tipoAlojamiento = TipoAlojamientoFactory.crear(data.type);
-
-    return new Alojamiento(
-      data.id,
-      data.title,
-      data.description,
-      tipoAlojamiento,
-      data.images || [],
-      data.average_rating || 0,
-      new Date(data.created_at),
-      data.status,
-      data.location,
-      data.features,
-      data.price
-    );
+    return AlojamientoMapper.desdeRegistro(data);
   }
 
   async listarTodos(): Promise<Alojamiento[]> {
@@ -81,23 +66,7 @@ async guardar(alojamiento: Alojamiento, propietarioId: string): Promise<Alojamie
 
     if (error || !data) return [];
 
-    return data.map((h) => {
-      const tipoAlojamiento = TipoAlojamientoFactory.crear(h.type);
-
-      return new Alojamiento(
-        h.id,
-        h.title,
-        h.description,
-        tipoAlojamiento,
-        h.images || [],
-        h.average_rating || 0,
-        new Date(h.created_at),
-        h.status,
-        h.location,
-        h.features,
-        h.price
-      );
-    });
+    return data.map((h) => AlojamientoMapper.desdeRegistro(h));
   }
 
   async actualizar(alojamiento: Alojamiento): Promise<Alojamiento> {

@@ -1,8 +1,8 @@
 import { supabase } from '../config/supabase';
 import type { Profile } from '../types/user';
-import { SupabasePropietarioRepository } from '../repository/SupabasePropietarioRepository'
+import { repositorioFactory } from '../config/repositorios';
 
-const propietarioRepository = new SupabasePropietarioRepository();
+const propietarioRepository = repositorioFactory.crearPropietarioRepository();
 
 export class UserService {
   
