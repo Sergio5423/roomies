@@ -1,11 +1,10 @@
-import Navbar from "../../../components/navbar/navbar";
-import Banner from "../../../components/banner/banner";
-import QuickActions from "../../../components/quick-actions/quickActions";
-import ExploreRooms from "../../../components/explore-rooms/exploreRooms";
-import ExploreLocation from "../../../components/explore-location/exploreLocation";
-import TrustSection from "../../../components/trust/trustSection";
-import Footer from "../../../components/footer/footer";
-
+import Navbar from "../../../src/components/navbar/navbar";
+import Banner from "../../../src/components/banner/banner";
+import QuickActions from "../../../src/components/quick-actions/quickActions";
+import ExploreRooms from "../../../src/components/explore-rooms/exploreRooms";
+import ExploreLocation from "../../../src/components/explore-location/exploreLocation";
+import TrustSection from "../../../src/components/trust/trustSection";
+import Footer from "../../../src/components/footer/footer";
 
 export default function Home() {
   return (
@@ -21,8 +20,6 @@ export default function Home() {
         <ExploreRooms />
         <ExploreLocation />
         <Footer />
-
-
       </main>
     </>
   );
