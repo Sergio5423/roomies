@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { BannerSlide } from "../../app/data/mock/bannerSlides";
+import type { BannerSlide } from "../../../app/data/mock/bannerSlides";
 
 export function useBanner(slides: BannerSlide[], intervalTime = 6000) {
   const [activeSlide, setActiveSlide] = useState(0);
