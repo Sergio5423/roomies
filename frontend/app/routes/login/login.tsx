@@ -14,11 +14,8 @@ export async function action({ request }: { request: Request }) {
 
   try {
     // Aquí llamas a tu servicio limpio
-    // const respuesta = await AuthService.login(email, password);
-    
-    // NOTA: Como tu backend aún no tiene Login real, simularemos éxito por ahora
-    console.log("Intentando login con:", email);
-    
+    await AuthService.login(email, password);
+
     // Si es exitoso, redirigimos al usuario a la página de habitaciones
     return redirect("/habitaciones");
   } catch (error) {

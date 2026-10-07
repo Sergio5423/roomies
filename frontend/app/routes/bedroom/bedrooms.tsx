@@ -1,3 +1,4 @@
+//bedrooms
 import { useLoaderData } from "react-router";
 import { AlojamientoService } from "../../../src/application/services/alojamiento.service";
 import RoomCard from "../../../src/components/cards/RoomCard";

@@ -1,16 +1,18 @@
 import { Form, redirect, useActionData, useNavigation, Link } from "react-router";
-// import { AuthService } from "../../../src/application/services/auth.service"; // Lo usaremos luego
+import { AuthService } from "../../../src/application/services/auth.service";
 
 export async function action({ request }: { request: Request }) {
   const formData = await request.formData();
   
-  const nombre = formData.get("nombre") as string;
+  const first_name = formData.get("first_name") as string;
+  const last_name = formData.get("last_name") as string;
+  const phone = formData.get("phone") as string;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  const rol = formData.get("rol") as 'Propietario' | 'Inquilino';
+  const role = formData.get("role") as string;
 
-  // Validación básica en el servidor/action
-  if (!nombre || !email || !password || !rol) {
+  // Validación básica en el servidor
+  if (!first_name || !last_name || !phone || !email || !password || !role) {
     return { error: "Todos los campos son obligatorios." };
   }
 
@@ -19,14 +21,21 @@ export async function action({ request }: { request: Request }) {
   }
 
   try {
-    // Aquí conectaremos con el AuthService cuando el backend esté listo
-    console.log("Registrando usuario:", { nombre, email, rol });
-    
-    // Si el registro es exitoso, lo enviamos al login para que inicie sesión
+    // Petición al backend con la estructura JSON requerida
+    await AuthService.register({
+      first_name,
+      last_name,
+      phone,
+      email,
+      password,
+      role
+    });
+
+    // Si el registro es exitoso, redirigimos al login
     return redirect("/login");
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error en registro:", error);
-    return { error: "No se pudo crear la cuenta. El correo podría estar en uso." };
+    return { error: error.message || "No se pudo crear la cuenta. Intenta de nuevo." };
   }
 }
 
@@ -58,18 +67,49 @@ export default function RegisterPage() {
         <Form method="post" className="mt-8 space-y-6">
           <div className="space-y-4">
             
-            {/* Nombre Completo */}
+            {/* Nombre y Apellido en línea */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="first_name" className="block text-sm font-medium text-gray-700">
+                  Nombre
+                </label>
+                <input
+                  id="first_name"
+                  name="first_name"
+                  type="text"
+                  required
+                  className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                  placeholder="Ej. Juan"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="last_name" className="block text-sm font-medium text-gray-700">
+                  Apellido
+                </label>
+                <input
+                  id="last_name"
+                  name="last_name"
+                  type="text"
+                  required
+                  className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                  placeholder="Ej. Pérez"
+                />
+              </div>
+            </div>
+
+            {/* Teléfono */}
             <div>
-              <label htmlFor="nombre" className="block text-sm font-medium text-gray-700">
-                Nombre completo
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                Teléfono / Celular
               </label>
               <input
-                id="nombre"
-                name="nombre"
-                type="text"
+                id="phone"
+                name="phone"
+                type="tel"
                 required
                 className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
-                placeholder="Ej. Juan Pérez"
+                placeholder="3001234567"
               />
             </div>
 
@@ -104,20 +144,20 @@ export default function RegisterPage() {
               />
             </div>
 
-            {/* Selección de Rol (Mapeado a tu DDD del backend) */}
+            {/* Selección de Rol */}
             <div>
-              <label htmlFor="rol" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="role" className="block text-sm font-medium text-gray-700">
                 ¿Qué buscas hacer en Roomies?
               </label>
               <select
-                id="rol"
-                name="rol"
+                id="role"
+                name="role"
                 required
                 className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500 bg-white sm:text-sm"
               >
                 <option value="">Selecciona una opción...</option>
-                <option value="Inquilino">Busco alquilar una habitación (Inquilino)</option>
-                <option value="Propietario">Quiero publicar mi espacio (Propietario)</option>
+                <option value="ESTUDIANTE">Busco alquilar una habitación (Estudiante/Inquilino)</option>
+                <option value="ARRENDATARIO">Quiero publicar mi espacio (Propietario/Arrendatario)</option>
               </select>
             </div>
           </div>
