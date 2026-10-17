@@ -57,33 +57,39 @@ export class AlojamientoService {
       Number(typeof p === 'object' ? p.precioMensual ?? p.monto : p)
     );
 
-    // 5. Instanciar Entidad de Dominio
+    // 5. Instanciar Entidad de Dominio incluyendo el propietarioId (landlord_id)
     const nuevoAlojamiento = new Alojamiento(
       uuidv4(),
       datosAlojamiento.titulo,
       datosAlojamiento.descripcion,
-      instanciaTipo, // Instancia concreta que hereda de TipoAlojamiento
+      instanciaTipo,
       datosAlojamiento.imagenes || [],
-      0, // Puntuación promedio inicial
+      0,
       new Date(),
       "disponible",
       ubicacion,
       caracteristica,
-      precio
+      precio,
+      propietarioId
     );
 
     // 6. Vincular la publicación con el Propietario en memoria/dominio
     propietario.publicarAlojamiento(nuevoAlojamiento);
 
     // 7. Persistir en Supabase a través del repositorio
-    // Pasar propietarioId como segundo argumento al guardar
     return await this.alojamientoRepository.guardar(nuevoAlojamiento, propietarioId);
   }
 
-  public async actualizarAlojamiento(alojamientoId: string, datosActualizados: any): Promise<Alojamiento> {
+  public async actualizarAlojamiento(alojamientoId: string, datosActualizados: any, usuarioId?: string): Promise<Alojamiento> {
     const alojamientoExistente = await this.alojamientoRepository.obtenerPorId(alojamientoId);
     if (!alojamientoExistente) {
       throw new Error("Alojamiento no encontrado");
+    }
+
+    // VALIDACIÓN DE AUTORIZACIÓN: Solo el propietario que lo publicó puede modificarlo
+    const ownerId = alojamientoExistente.getLandlordId();
+    if (usuarioId && ownerId && ownerId !== usuarioId) {
+      throw new Error("No tienes autorización para modificar este alojamiento. Solo el propietario que lo publicó puede modificarlo.");
     }
 
     // Reconstruir TipoAlojamiento si se envía un cambio, o mantener el actual
@@ -120,7 +126,7 @@ export class AlojamientoService {
       ? new Precio(Number(typeof p === 'object' ? p.precioMensual ?? p.monto : p))
       : alojamientoExistente.getPrecio();
 
-    // Instanciar el objeto Alojamiento con los datos nuevos para pasarlo al método de la entidad
+    // Instanciar el objeto Alojamiento con los datos nuevos
     const datosNuevos = new Alojamiento(
       alojamientoExistente.getId(),
       datosActualizados.titulo || alojamientoExistente.getTitulo(),
@@ -132,7 +138,8 @@ export class AlojamientoService {
       alojamientoExistente.getEstado(),
       ubicacion,
       caracteristicas,
-      precio
+      precio,
+      ownerId
     );
 
     // Mutación en la entidad del dominio
@@ -141,10 +148,16 @@ export class AlojamientoService {
     return await this.alojamientoRepository.actualizar(alojamientoExistente);
   }
 
-  public async cambiarEstado(alojamientoId: string, nuevoEstado: string): Promise<Alojamiento> {
+  public async cambiarEstado(alojamientoId: string, nuevoEstado: string, usuarioId?: string): Promise<Alojamiento> {
     const alojamiento = await this.alojamientoRepository.obtenerPorId(alojamientoId);
     if (!alojamiento) {
       throw new Error("Alojamiento no encontrado");
+    }
+
+    // VALIDACIÓN DE AUTORIZACIÓN: Solo el propietario que lo publicó puede cambiar el estado
+    const ownerId = alojamiento.getLandlordId();
+    if (usuarioId && ownerId && ownerId !== usuarioId) {
+      throw new Error("No tienes autorización para cambiar el estado de este alojamiento. Solo el propietario que lo publicó puede modificarlo.");
     }
 
     alojamiento.actualizarEstado(nuevoEstado);

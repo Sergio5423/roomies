@@ -75,11 +75,18 @@ export class AlojamientoController {
         return;
       }
 
+      if (!req.user) {
+        res.status(401).json({ error: "Usuario no autenticado" });
+        return;
+      }
+
       const datosActualizados = req.body;
+      const usuarioId = req.user.id;
 
       const alojamiento = await this.alojamientoService.actualizarAlojamiento(
         alojamientoId,
-        datosActualizados
+        datosActualizados,
+        usuarioId
       );
 
       res.status(200).json({
@@ -87,7 +94,11 @@ export class AlojamientoController {
         data: alojamiento
       });
     } catch (error: any) {
-      res.status(404).json({ error: error.message });
+      if (error.message?.includes("autorización") || error.message?.includes("No tienes")) {
+        res.status(403).json({ error: error.message });
+        return;
+      }
+      res.status(400).json({ error: error.message });
     }
   }
 
@@ -101,9 +112,17 @@ export class AlojamientoController {
         return;
       }
 
+      if (!req.user) {
+        res.status(401).json({ error: "Usuario no autenticado" });
+        return;
+      }
+
+      const usuarioId = req.user.id;
+
       const alojamiento = await this.alojamientoService.cambiarEstado(
         alojamientoId,
-        nuevoEstado
+        nuevoEstado,
+        usuarioId
       );
 
       res.status(200).json({
@@ -111,7 +130,11 @@ export class AlojamientoController {
         data: alojamiento
       });
     } catch (error: any) {
-      res.status(404).json({ error: error.message });
+      if (error.message?.includes("autorización") || error.message?.includes("No tienes")) {
+        res.status(403).json({ error: error.message });
+        return;
+      }
+      res.status(400).json({ error: error.message });
     }
   }
 }

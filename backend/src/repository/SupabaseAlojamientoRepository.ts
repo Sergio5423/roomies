@@ -10,7 +10,7 @@ async guardar(alojamiento: Alojamiento, propietarioId: string): Promise<Alojamie
     .from('housing')
     .insert({
       id: alojamiento.getId(),
-      landlord_id: propietarioId, // 👈 Usar la variable pasada por parámetro
+      landlord_id: propietarioId,
       title: alojamiento.getTitulo(),
       description: alojamiento.getDescripcion(),
       type: alojamiento.getTipoAlojamiento().getNombre(),
@@ -69,7 +69,8 @@ async guardar(alojamiento: Alojamiento, propietarioId: string): Promise<Alojamie
       data.status,
       data.location,
       data.features,
-      data.price
+      data.price,
+      data.landlord_id
     );
   }
 
@@ -95,7 +96,8 @@ async guardar(alojamiento: Alojamiento, propietarioId: string): Promise<Alojamie
         h.status,
         h.location,
         h.features,
-        h.price
+        h.price,
+        h.landlord_id
       );
     });
   }

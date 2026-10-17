@@ -2,7 +2,7 @@ import type { TipoAlojamiento } from "./TipoAlojamiento";
 import { Caracteristica } from "./Caracteristica";
 import { Precio } from "./Precio";
 import { Ubicacion } from "./Ubicacion";
-import { Regla } from "./Regla"
+import { Regla } from "./Regla";
 
 export class Alojamiento {
   private readonly id: string;
@@ -16,6 +16,8 @@ export class Alojamiento {
   private ubicacion: Ubicacion;
   private caracteristicas: Caracteristica;
   private precio: Precio;
+  public landlord_id?: string;
+  public propietarioId?: string;
 
   constructor(
     id: string,
@@ -28,7 +30,8 @@ export class Alojamiento {
     estado: string,
     ubicacion: Ubicacion,
     caracteristicas: Caracteristica,
-    precio: Precio
+    precio: Precio,
+    landlord_id?: string
   ) {
     this.id = id;
     this.titulo = titulo;
@@ -41,6 +44,8 @@ export class Alojamiento {
     this.ubicacion = ubicacion;
     this.caracteristicas = caracteristicas;
     this.precio = precio;
+    this.landlord_id = landlord_id;
+    this.propietarioId = landlord_id;
   }
 
   public actualizarAlojamiento(datos: Alojamiento): void {
@@ -52,6 +57,10 @@ export class Alojamiento {
     this.ubicacion = datos.ubicacion;
     this.caracteristicas = datos.caracteristicas;
     this.precio = datos.precio;
+    if (datos.landlord_id) {
+      this.landlord_id = datos.landlord_id;
+      this.propietarioId = datos.landlord_id;
+    }
   }
 
   public actualizarEstado(nuevoEstado: string): void {
@@ -69,6 +78,8 @@ export class Alojamiento {
   public getUbicacion(): Ubicacion { return this.ubicacion; }
   public getCaracteristicas(): Caracteristica { return this.caracteristicas; }
   public getPrecio(): Precio { return this.precio; }
+  public getLandlordId(): string | undefined { return this.landlord_id || this.propietarioId; }
+  public getPropietarioId(): string | undefined { return this.propietarioId || this.landlord_id; }
 
   public getTipoAlojamientoNombre(): string {
     return this.tipoAlojamiento.getNombre();
