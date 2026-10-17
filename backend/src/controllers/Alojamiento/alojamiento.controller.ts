@@ -1,15 +1,19 @@
 import type { Request, Response } from 'express';
-import { AlojamientoService } from '../../service/Alojamiento/AlojamientoService';
+import { AlojamientoService } from '../../services/Alojamiento/alojamiento.service';
 
 export class AlojamientoController {
   constructor(private alojamientoService: AlojamientoService) { }
 
   public publicar = async (req: Request, res: Response): Promise<void> => {
     try {
-      // Se recolectan los datos planos enviados desde el front
-      const { propietarioId, ...datosAlojamiento } = req.body;
+      if (!req.user) {
+        res.status(401).json({ error: "Usuario no autenticado" });
+        return;
+      }
 
-      // El servicio se encarga de crear el objeto
+      const propietarioId = req.user.id;
+      const datosAlojamiento = req.body;
+
       const nuevoAlojamiento = await this.alojamientoService.publicarAlojamiento(
         propietarioId,
         datosAlojamiento
@@ -24,14 +28,51 @@ export class AlojamientoController {
     }
   }
 
+  public listarTodos = async (_req: Request, res: Response): Promise<void> => {
+    try {
+      const alojamientos = await this.alojamientoService.listarTodos();
+      
+      res.status(200).json({
+        mensaje: "Alojamientos obtenidos con éxito",
+        data: alojamientos
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  public obtenerPorId = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const alojamientoId = req.params.id;
+
+      if (!alojamientoId || typeof alojamientoId !== 'string') {
+        res.status(400).json({ error: "El ID proporcionado no es válido" });
+        return;
+      }
+
+      const alojamiento = await this.alojamientoService.obtenerPorId(alojamientoId);
+
+      if (!alojamiento) {
+        res.status(404).json({ error: "Alojamiento no encontrado" });
+        return;
+      }
+
+      res.status(200).json({
+        mensaje: "Alojamiento encontrado",
+        data: alojamiento
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
   public actualizar = async (req: Request, res: Response): Promise<void> => {
     try {
       const alojamientoId = req.params.id;
 
-      // Validamos que exista y que estrictamente sea un string
       if (!alojamientoId || typeof alojamientoId !== 'string') {
         res.status(400).json({ error: "El ID proporcionado no es válido" });
-        return; // Corta la ejecución para que TS sepa que de aquí en adelante es seguro
+        return;
       }
 
       const datosActualizados = req.body;
@@ -57,7 +98,7 @@ export class AlojamientoController {
 
       if (!alojamientoId || typeof alojamientoId !== 'string') {
         res.status(400).json({ error: "El ID proporcionado no es válido" });
-        return; 
+        return;
       }
 
       const alojamiento = await this.alojamientoService.cambiarEstado(

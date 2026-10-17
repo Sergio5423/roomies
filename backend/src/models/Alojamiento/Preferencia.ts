@@ -34,7 +34,7 @@ export class Preferencia {
   }  
 
   public esTipoCompatible(tipo: TipoAlojamiento): boolean {
-    return this.tipoAlojamiento.getNombreTipo() === tipo.getNombreTipo();
+    return this.tipoAlojamiento.getNombre() === tipo.getNombre();
   }
 
   public getId(): number { return this.id; }

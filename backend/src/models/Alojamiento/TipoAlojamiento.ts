@@ -6,7 +6,7 @@ export abstract class TipoAlojamiento {
     private contratoAnual: boolean = false;
     private reglasEspecificas: Regla[] = [];
 
-    public abstract getNombreTipo(): string;
+    public abstract getNombre(): string;
 
     public getServicios(): string[] {
         return this.serviciosEspecificos;

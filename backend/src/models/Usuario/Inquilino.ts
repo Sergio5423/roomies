@@ -1,7 +1,7 @@
-import { Usuario } from './Usuario'
+import { Usuario } from './Usuario';
 import { Alojamiento } from '../Alojamiento/Alojamiento';
 import { Solicitud } from '../Solicitud';
-import { PublicacionRoomie } from '../PublicacionRoomie'
+import { PublicacionRoomie } from '../PublicacionRoomie';
 
 export class Inquilino extends Usuario {
   private favoritos: Alojamiento[] = [];
@@ -9,17 +9,16 @@ export class Inquilino extends Usuario {
   private publicacionesRoomie: PublicacionRoomie[] = [];
 
   constructor(
-    id: number,
-    nombreCompleto: string,
-    telefono: string,
-    rol: string,
-    estado: string,
+    id: string,
+    first_name: string,
+    last_name: string,
     email: string,
+    telefono: string,
     favoritos: Alojamiento[] = [],
     solicitudes: Solicitud[] = [],
     publicacionesRoomie: PublicacionRoomie[] = []
-  ) {
-    super(id, nombreCompleto, telefono, rol, estado, email);
+  ) {    
+    super(id, first_name, last_name, email, telefono, 'ESTUDIANTE', 'activo');
     this.favoritos = favoritos;
     this.solicitudes = solicitudes;
     this.publicacionesRoomie = publicacionesRoomie;
@@ -37,7 +36,15 @@ export class Inquilino extends Usuario {
     this.publicacionesRoomie.push(publicacion);
   }
 
-  public getFavoritos(): Alojamiento[] { return this.favoritos; }
-  public getSolicitudes(): Solicitud[] { return this.solicitudes; }
-  public getPublicaciones(): PublicacionRoomie[] { return this.publicacionesRoomie; }
+  public getFavoritos(): Alojamiento[] {
+    return [...this.favoritos];
+  }
+
+  public getSolicitudes(): Solicitud[] {
+    return [...this.solicitudes];
+  }
+
+  public getPublicaciones(): PublicacionRoomie[] {
+    return [...this.publicacionesRoomie];
+  }
 }
