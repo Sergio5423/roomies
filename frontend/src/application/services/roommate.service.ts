@@ -1,31 +1,76 @@
 import { apiClient } from '../../infrastructure/api/apiClient';
 
-// Definimos un modelo rápido para el Roommate
-export interface Roommate {
+export interface EstudianteRoomie {
   id: string;
   nombre: string;
-  edad: number;
-  presupuestoMax: number;
-  ocupacion: string;
+  email: string;
+  telefono: string;
+}
+
+export interface UbicacionRoomie {
+  direccion: string;
+  ciudad: string;
+  barrio?: string;
+  distancia?: string;
+  latitud?: number;
+  longitud?: number;
+}
+
+export interface CaracteristicasRoomie {
+  numeroCuartos: number;
+  metrosCuadrados: number;
+  capacidad?: number;
+  amoblado?: boolean;
+  buscandoRoomie?: boolean;
+}
+
+export interface AlojamientoRoomie {
+  id: string;
+  titulo: string;
+  tipo: string;
+  precio: number;
+  ubicacion: UbicacionRoomie;
+  caracteristicas: CaracteristicasRoomie;
+}
+
+export interface PublicacionRoomie {
+  id: string;
   descripcion: string;
+  estado: string;
+  fecha: string;
+  alojamiento: AlojamientoRoomie;
+}
+
+export interface EstudianteConRoomies {
+  estudiante: EstudianteRoomie;
+  publicacionesRoomie: PublicacionRoomie[];
+}
+
+export interface RoomiesActivosResponse {
+  mensaje: string;
+  data: EstudianteConRoomies[];
 }
 
 export const RoommateService = {
-  obtenerTodos: async (): Promise<Roommate[]> => {
-    try {
-      // Intenta conectar al backend real
-      const response = await apiClient<{ data: Roommate[] }>('/api/roommates', { 
-        method: 'GET' 
-      });
-      return response.data || [];
-    } catch (error) {
-      console.warn("Backend de roommates no disponible, usando datos de prueba.");
-      // Datos mockeados para no romper el diseño mientras el backend se conecta
-      return [
-        { id: "1", nombre: "Carlos", edad: 25, presupuestoMax: 300, ocupacion: "Desarrollador", descripcion: "Busco depa tranquilo, cero fiestas, trabajo remoto." },
-        { id: "2", nombre: "Ana", edad: 22, presupuestoMax: 250, ocupacion: "Estudiante", descripcion: "Busco compartir con chicas cerca a la universidad. Me gustan los gatos." },
-        { id: "3", nombre: "Diego", edad: 28, presupuestoMax: 400, ocupacion: "Ingeniero", descripcion: "Busco roomie responsable para alquilar un apartamento de 2 habitaciones." },
-      ];
+  /**
+   * Obtiene la lista de estudiantes y alojamientos buscando roomie
+   * GET /api/users/roomies/activos
+   */
+  obtenerRoomiesActivos: async (token?: string): Promise<EstudianteConRoomies[]> => {
+    const response = await apiClient<RoomiesActivosResponse>('/api/users/roomies/activos', {
+      method: 'GET',
+      token,
+    });
+    if (response && Array.isArray(response.data)) {
+      return response.data;
     }
-  }
+    return [];
+  },
+
+  /**
+   * Alias de compatibilidad
+   */
+  obtenerTodos: async (token?: string): Promise<EstudianteConRoomies[]> => {
+    return await RoommateService.obtenerRoomiesActivos(token);
+  },
 };

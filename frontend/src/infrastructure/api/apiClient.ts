@@ -12,14 +12,23 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
   let resolvedToken = token;
   if (!resolvedToken && typeof window !== 'undefined') {
     try {
-      resolvedToken = localStorage.getItem('roomies_token') || undefined;
+      resolvedToken =
+        localStorage.getItem('roomies_token') ||
+        localStorage.getItem('token') ||
+        localStorage.getItem('access_token') ||
+        localStorage.getItem('authToken') ||
+        undefined;
     } catch {
       // Ignorar si localStorage no está accesible
     }
   }
 
   const authHeaders: Record<string, string> = resolvedToken
-    ? { Authorization: `Bearer ${resolvedToken}` }
+    ? {
+        Authorization: resolvedToken.startsWith('Bearer ')
+          ? resolvedToken
+          : `Bearer ${resolvedToken}`,
+      }
     : {};
 
   const config: RequestInit = {
